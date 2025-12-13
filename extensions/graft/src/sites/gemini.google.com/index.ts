@@ -9,7 +9,7 @@ function extractConversationId(element: Element): string | null {
   // IDは c_ + 16文字のhex
   const match = jslog.match(/c_([a-f0-9]{16})/);
   // URLには c_ を含めないため、キャプチャグループ(ID部分のみ)を返す
-  return match ? match[1] : null;
+  return match && match[1] ? match[1] : null;
 }
 
 // 全体のスタイル調整 (CSS注入)
