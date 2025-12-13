@@ -6,12 +6,12 @@ const isWatch = process.argv.includes("--watch");
 const sitesDir = resolve(import.meta.dir, "src/sites");
 const outDir = resolve(import.meta.dir, "dist");
 
-// クリーンアップ
+// Cleanup
 if (existsSync(outDir)) {
   rmSync(outDir, { recursive: true });
 }
 
-// エントリポイントの収集
+// Collect entrypoints
 const entrypoints: string[] = [];
 
 if (existsSync(sitesDir)) {
@@ -30,22 +30,22 @@ if (entrypoints.length === 0) {
   if (!isWatch) process.exit(0);
 }
 
-// Bun Build API は naming オプションで出力先を柔軟に制御するのが少し難しい場合があるため、
-// 今回はディレクトリ構造が単純なので、outdir指定で src/sites/... の構造が dist/src/sites/... になるか、
-// dist/sites/... になるか挙動を確認しつつ実装します。
-// Bun の build は entrypoints の共通祖先ディレクトリからの相対パスを使用する傾向があります。
-// ここでは root を src に設定してみます。
+// Bun Build API might have limitations with flexible output paths via `naming` option.
+// Since the directory structure is simple, we check if `outdir` setting preserves
+// src/sites/... structure into dist/src/sites/... or dist/sites/...
+// Bun build tends to use relative paths from the common ancestor of entrypoints.
+// Here we set `root` to "src".
 
 const runBuild = async () => {
   console.log("Building sites:", entrypoints);
   const result = await build({
     entrypoints: entrypoints,
     outdir: outDir, // dist/
-    root: "src",    // これで dist/sites/domain.com/index.js になるはず
+    root: "src",    // This should result in dist/sites/domain.com/index.js
     target: "browser",
     minify: false,
-    splitting: false, // 単一ファイルにバンドル
-    // naming: "[dir]/[name].[ext]", // デフォルトで相対パス維持されるはず
+    splitting: false, // Bundle into single file
+    // naming: "[dir]/[name].[ext]", // Default behavior should preserve relative paths
   });
 
   if (!result.success) {
@@ -60,7 +60,7 @@ const runBuild = async () => {
 
 await runBuild();
 
-// manifest.json を dist にコピー
+// Copy manifest.json to dist
 const manifestSrc = resolve(import.meta.dir, "manifest.json");
 const manifestDest = resolve(outDir, "manifest.json");
 if (existsSync(manifestSrc)) {
@@ -71,9 +71,9 @@ if (existsSync(manifestSrc)) {
 
 if (isWatch) {
   console.log("Watching for changes in src/sites...");
-  // 簡易Watch: src/sites 以下の変更を監視してリビルド
-  // 注意: fs.watch は再帰的監視オプション(recursive: true)がLinux等で非対応な場合があるが、Mac(darwin)ならOK。
-  // Bunのファイル監視APIを使う手もあるが、fs.watchで十分。
+  // Simple Watch: Monitor changes under src/sites and rebuild
+  // Note: fs.watch recursive option works on Mac(darwin).
+  // Could use Bun's file watching API, but fs.watch is sufficient here.
   const fs = await import("fs");
   fs.watch(sitesDir, { recursive: true }, async (event, filename) => {
     console.log(`Change detected: ${filename}`);
