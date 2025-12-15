@@ -1,15 +1,28 @@
 # graft
 
-To install dependencies:
+A personal userscript manager as a Chrome extension
+
+## Supported Sites
+
+### gemini.google.com
+- Adds an "Open in new tab" button to the conversation list
+
+## Setup
 
 ```bash
 bun install
+bun run build
 ```
 
-To run:
+In Chrome, go to `chrome://extensions` → Enable Developer mode → Load the `dist` folder
+
+## Development
 
 ```bash
-bun run index.ts
+bun run dev
 ```
 
-This project was created using `bun init` in bun v1.3.2. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Adding a New Site
+
+1. Create `src/sites/{domain}/index.ts`
+2. Add a content_scripts entry to `manifest.json`
