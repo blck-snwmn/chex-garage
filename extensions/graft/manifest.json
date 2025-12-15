@@ -4,9 +4,6 @@
   "version": "0.1.0",
   "description": "Personal UserScript Manager powered by Bun",
   "permissions": [],
-  "host_permissions": [
-    "https://gemini.google.com/*"
-  ],
   "content_scripts": [
     {
       "matches": ["https://gemini.google.com/*"],
