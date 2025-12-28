@@ -1,5 +1,16 @@
 console.log("Graft: Gemini script loaded");
 
+// Update browser tab title based on current chat title
+function updateBrowserTabTitle() {
+  const titleElement = document.querySelector('span.conversation-title');
+  if (titleElement && titleElement.textContent?.trim()) {
+    const chatTitle = titleElement.textContent.trim();
+    document.title = `${chatTitle} - Gemini`;
+  } else {
+    document.title = 'Gemini';
+  }
+}
+
 // Extract Conversation ID
 function extractConversationId(element: Element): string | null {
   const jslog = element.getAttribute("jslog");
@@ -129,16 +140,21 @@ function scanAndProcess() {
 const observer = new MutationObserver((mutations) => {
   // Execute scan on any change (could be throttled, but simple enough for now)
   scanAndProcess();
+  // Update browser tab title when DOM changes
+  updateBrowserTabTitle();
 });
 
 // Initialization
 function init() {
   console.log("Graft: Initializing...");
-  
+
   injectGlobalStyles(); // Inject styles
-  
+
   // Initial scan
   scanAndProcess();
+
+  // Initial tab title update
+  updateBrowserTabTitle();
 
   // Start observing DOM
   observer.observe(document.body, { childList: true, subtree: true });
