@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article Deck</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Article Deck</h1>
+      <p class="description">Generate slides from the current page</p>
+
+      <div id="main-content">
+        <button id="generateBtn" class="btn primary">
+          <span class="btn-text">Generate Slides</span>
+          <span class="btn-loading" hidden>
+            <span class="spinner"></span>
+            Generating...
+          </span>
+        </button>
+      </div>
+
+      <div id="result" class="result" hidden>
+        <h2>Download Options</h2>
+        <div class="download-buttons">
+          <button id="downloadMd" class="btn secondary">Download Markdown</button>
+          <button id="downloadHtml" class="btn secondary">Download HTML</button>
+          <button id="previewBtn" class="btn secondary">Preview (PDF)</button>
+        </div>
+      </div>
+
+      <div id="error" class="error" hidden></div>
+
+      <div class="footer">
+        <a href="#" id="optionsLink">Settings</a>
+      </div>
+    </div>
+
+    <script src="index.js" type="module"></script>
+  </body>
+</html>
