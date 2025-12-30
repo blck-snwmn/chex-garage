@@ -21,6 +21,7 @@
     "jsdom": "^27.4.0",
     "oxfmt": "^0.21.0",
     "oxlint": "^1.36.0",
+    "sharp": "^0.34.5",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
