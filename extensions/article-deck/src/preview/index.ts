@@ -1,18 +1,42 @@
 const container = document.getElementById("preview-container") as HTMLDivElement;
 const loading = document.getElementById("loading") as HTMLDivElement;
 const printBtn = document.getElementById("printBtn") as HTMLButtonElement;
-const closeBtn = document.getElementById("closeBtn") as HTMLButtonElement;
+const downloadMdBtn = document.getElementById("downloadMd") as HTMLButtonElement;
+const downloadHtmlBtn = document.getElementById("downloadHtml") as HTMLButtonElement;
+
+let previewData: {
+  html: string;
+  markdown: string;
+  title: string;
+} | null = null;
+
+function downloadFile(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 async function init() {
-  const data = await chrome.storage.local.get(["previewHtml", "previewTitle"]);
+  const data = await chrome.storage.local.get(["previewHtml", "previewMarkdown", "previewTitle"]);
 
   if (!data.previewHtml) {
     loading.textContent = "No preview data found";
     return;
   }
 
+  // Store data for download functionality
+  previewData = {
+    html: data.previewHtml,
+    markdown: data.previewMarkdown || "",
+    title: data.previewTitle || "slides",
+  };
+
   // Update page title
-  document.title = `${data.previewTitle || "Slides"} - Article Deck`;
+  document.title = `${previewData.title} - Article Deck`;
 
   // Create iframe with the HTML content
   const iframe = document.createElement("iframe");
@@ -25,8 +49,8 @@ async function init() {
   loading.remove();
   container.appendChild(iframe);
 
-  // Clean up storage
-  await chrome.storage.local.remove(["previewHtml", "previewTitle"]);
+  // Clean up storage after loading
+  await chrome.storage.local.remove(["previewHtml", "previewMarkdown", "previewTitle"]);
 }
 
 printBtn.addEventListener("click", () => {
@@ -36,8 +60,14 @@ printBtn.addEventListener("click", () => {
   }
 });
 
-closeBtn.addEventListener("click", () => {
-  window.close();
+downloadMdBtn.addEventListener("click", () => {
+  if (!previewData) return;
+  downloadFile(previewData.markdown, `${previewData.title}.md`, "text/markdown");
+});
+
+downloadHtmlBtn.addEventListener("click", () => {
+  if (!previewData) return;
+  downloadFile(previewData.html, `${previewData.title}.html`, "text/html");
 });
 
 init();

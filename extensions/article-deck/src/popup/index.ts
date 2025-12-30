@@ -2,20 +2,17 @@ import type {
   ExtractedContent,
   GenerateSlideRequest,
   GenerateSlideResponse,
-  SlideResult,
 } from "../types/index.ts";
+import { Readability } from "@mozilla/readability";
+import TurndownService from "turndown";
+import { gfm } from "turndown-plugin-gfm";
 
 const generateBtn = document.getElementById("generateBtn") as HTMLButtonElement;
 const btnText = generateBtn.querySelector(".btn-text") as HTMLSpanElement;
 const btnLoading = generateBtn.querySelector(".btn-loading") as HTMLSpanElement;
-const resultSection = document.getElementById("result") as HTMLDivElement;
 const errorSection = document.getElementById("error") as HTMLDivElement;
-const downloadMdBtn = document.getElementById("downloadMd") as HTMLButtonElement;
-const downloadHtmlBtn = document.getElementById("downloadHtml") as HTMLButtonElement;
-const previewBtn = document.getElementById("previewBtn") as HTMLButtonElement;
 const optionsLink = document.getElementById("optionsLink") as HTMLAnchorElement;
 
-let currentResult: SlideResult | null = null;
 let pageTitle = "slides";
 
 function setLoading(loading: boolean) {
@@ -27,13 +24,6 @@ function setLoading(loading: boolean) {
 function showError(message: string) {
   errorSection.textContent = message;
   errorSection.hidden = false;
-  resultSection.hidden = true;
-}
-
-function showResult(result: SlideResult) {
-  currentResult = result;
-  errorSection.hidden = true;
-  resultSection.hidden = false;
 }
 
 async function extractContent(): Promise<ExtractedContent | null> {
@@ -64,11 +54,6 @@ async function extractContent(): Promise<ExtractedContent | null> {
       showError("Failed to extract page content");
       return null;
     }
-
-    // Process the HTML in the popup context where we have access to modules
-    const { Readability } = await import("@mozilla/readability");
-    const TurndownService = (await import("turndown")).default;
-    const { gfm } = await import("turndown-plugin-gfm");
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(pageData.html, "text/html");
@@ -104,7 +89,6 @@ async function extractContent(): Promise<ExtractedContent | null> {
 async function generateSlides() {
   setLoading(true);
   errorSection.hidden = true;
-  resultSection.hidden = true;
 
   try {
     const content = await extractContent();
@@ -123,7 +107,20 @@ async function generateSlides() {
     );
 
     if (response.success && response.result) {
-      showResult(response.result);
+      // Store the result and open preview automatically
+      await chrome.storage.local.set({
+        previewHtml: response.result.html,
+        previewMarkdown: response.result.markdown,
+        previewTitle: pageTitle,
+      });
+
+      // Open the preview page
+      await chrome.tabs.create({
+        url: chrome.runtime.getURL("preview/index.html"),
+      });
+
+      // Close the popup
+      window.close();
     } else {
       showError(response.error || "Failed to generate slides");
     }
@@ -134,45 +131,7 @@ async function generateSlides() {
   }
 }
 
-function downloadFile(content: string, filename: string, mimeType: string) {
-  const blob = new Blob([content], { type: mimeType });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function downloadMarkdown() {
-  if (!currentResult) return;
-  downloadFile(currentResult.markdown, `${pageTitle}.md`, "text/markdown");
-}
-
-function downloadHtml() {
-  if (!currentResult) return;
-  downloadFile(currentResult.html, `${pageTitle}.html`, "text/html");
-}
-
-async function openPreview() {
-  if (!currentResult) return;
-
-  // Store the HTML in storage temporarily
-  await chrome.storage.local.set({
-    previewHtml: currentResult.html,
-    previewTitle: pageTitle,
-  });
-
-  // Open the preview page
-  chrome.tabs.create({
-    url: chrome.runtime.getURL("preview/index.html"),
-  });
-}
-
 generateBtn.addEventListener("click", generateSlides);
-downloadMdBtn.addEventListener("click", downloadMarkdown);
-downloadHtmlBtn.addEventListener("click", downloadHtml);
-previewBtn.addEventListener("click", openPreview);
 optionsLink.addEventListener("click", (e) => {
   e.preventDefault();
   chrome.runtime.openOptionsPage();

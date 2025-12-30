@@ -84,6 +84,10 @@ h2 {
   gap: 8px;
 }
 
+.btn-loading[hidden] {
+  display: none;
+}
+
 .spinner {
   width: 16px;
   height: 16px;
@@ -97,18 +101,6 @@ h2 {
   to {
     transform: rotate(360deg);
   }
-}
-
-.result {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.download-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .error {
