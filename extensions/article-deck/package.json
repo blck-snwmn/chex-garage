@@ -10,13 +10,18 @@
     "lint": "oxlint src",
     "lint:fix": "oxlint --fix src",
     "fmt": "oxfmt src",
-    "fmt:check": "oxfmt --check src"
+    "fmt:check": "oxfmt --check src",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/jsdom": "^27.0.0",
     "chrome-types": "^0.1.403",
+    "jsdom": "^27.4.0",
     "oxfmt": "^0.21.0",
-    "oxlint": "^1.36.0"
+    "oxlint": "^1.36.0",
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "typescript": "^5"
