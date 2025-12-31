@@ -8,8 +8,8 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "lint": "oxlint --type-aware --type-check --deny-warnings .",
-    "lint:fix": "oxlint --type-aware --type-check --deny-warnings --fix .",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint -- --fix",
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",
     "typecheck": "tsc --build --noEmit",

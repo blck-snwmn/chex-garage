@@ -6,6 +6,10 @@
       "inputs": ["src/**", "icons/**", "build.ts", "manifest.json", "package.json"],
       "outputs": ["dist/**"]
     },
+    "lint": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "**/*.ts", "**/*.tsx"]
+    },
     "test": {
       "dependsOn": ["^build"],
       "inputs": ["src/**", "**/*.test.ts", "**/*.test.tsx"],

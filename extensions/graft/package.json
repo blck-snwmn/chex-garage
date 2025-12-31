@@ -6,6 +6,7 @@
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun run build.ts --watch",
+    "lint": "oxlint --type-aware --type-check --deny-warnings .",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
