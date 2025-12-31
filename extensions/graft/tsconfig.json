@@ -4,5 +4,6 @@
     "lib": ["ESNext", "DOM"],
     "jsx": "react-jsx",
     "allowJs": true
-  }
+  },
+  "include": ["src/**/*", "*.ts"]
 }
