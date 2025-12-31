@@ -22,11 +22,11 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/jsdom": "^27.0.0",
-    "chrome-types": "^0.1.403",
-    "jsdom": "^27.4.0",
-    "sharp": "^0.34.5",
-    "vitest": "^4.0.16"
+    "@types/jsdom": "27.0.0",
+    "chrome-types": "0.1.403",
+    "jsdom": "27.4.0",
+    "sharp": "0.34.5",
+    "vitest": "4.0.16"
   },
   "peerDependencies": {
     "typescript": "^5"
