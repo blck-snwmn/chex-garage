@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/chrome": "0.0.287",
+    "chrome-types": "0.1.403",
     "sharp": "0.34.5"
   }
 }
