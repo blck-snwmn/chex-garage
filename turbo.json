@@ -11,17 +11,6 @@
       "inputs": ["src/**", "**/*.test.ts", "**/*.test.tsx"],
       "outputs": ["coverage/**"]
     },
-    "lint": {
-      "inputs": ["src/**"],
-      "outputs": []
-    },
-    "fmt": {
-      "cache": false
-    },
-    "fmt:check": {
-      "inputs": ["src/**"],
-      "outputs": []
-    },
     "typecheck": {
       "dependsOn": ["^build"],
       "inputs": ["src/**", "tsconfig.json"],

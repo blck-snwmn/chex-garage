@@ -6,9 +6,11 @@
       "name": "chex-garage",
       "devDependencies": {
         "@changesets/cli": "^2.27.0",
+        "@types/bun": "^1.3.5",
         "@typescript-eslint/eslint-plugin": "^8.50.0",
         "oxfmt": "^0.21.0",
         "oxlint": "^1.36.0",
+        "oxlint-tsgolint": "^0.10.0",
         "turbo": "^2.3.0",
         "typescript": "^5",
       },

@@ -1,8 +1,24 @@
-const container = document.getElementById("preview-container") as HTMLDivElement;
-const loading = document.getElementById("loading") as HTMLDivElement;
-const printBtn = document.getElementById("printBtn") as HTMLButtonElement;
-const downloadMdBtn = document.getElementById("downloadMd") as HTMLButtonElement;
-const downloadHtmlBtn = document.getElementById("downloadHtml") as HTMLButtonElement;
+function getDiv(id: string): HTMLDivElement {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLDivElement)) {
+    throw new Error(`Required div #${id} not found`);
+  }
+  return el;
+}
+
+function getButton(id: string): HTMLButtonElement {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLButtonElement)) {
+    throw new Error(`Required button #${id} not found`);
+  }
+  return el;
+}
+
+const container = getDiv("preview-container");
+const loading = getDiv("loading");
+const printBtn = getButton("printBtn");
+const downloadMdBtn = getButton("downloadMd");
+const downloadHtmlBtn = getButton("downloadHtml");
 
 let previewData: {
   html: string;
@@ -70,4 +86,4 @@ downloadHtmlBtn.addEventListener("click", () => {
   downloadFile(previewData.html, `${previewData.title}.html`, "text/html");
 });
 
-init();
+void init();

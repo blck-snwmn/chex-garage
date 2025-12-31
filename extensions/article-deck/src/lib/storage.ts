@@ -2,7 +2,8 @@ import type { StorageData } from "../types/index.ts";
 
 export async function getApiKey(): Promise<string | undefined> {
   const result = await chrome.storage.local.get("apiKey");
-  return result.apiKey as string | undefined;
+  const apiKey = result.apiKey;
+  return typeof apiKey === "string" ? apiKey : undefined;
 }
 
 export async function setApiKey(apiKey: string): Promise<void> {
@@ -10,5 +11,8 @@ export async function setApiKey(apiKey: string): Promise<void> {
 }
 
 export async function getStorageData(): Promise<StorageData> {
-  return (await chrome.storage.local.get(["apiKey"])) as StorageData;
+  const result = await chrome.storage.local.get(["apiKey"]);
+  return {
+    apiKey: typeof result.apiKey === "string" ? result.apiKey : undefined,
+  };
 }

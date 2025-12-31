@@ -1,9 +1,33 @@
 import { getApiKey, setApiKey } from "../lib/storage.ts";
 
-const apiKeyInput = document.getElementById("apiKey") as HTMLInputElement;
-const saveBtn = document.getElementById("saveBtn") as HTMLButtonElement;
-const toggleBtn = document.getElementById("toggleBtn") as HTMLButtonElement;
-const statusEl = document.getElementById("status") as HTMLDivElement;
+function getInput(id: string): HTMLInputElement {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLInputElement)) {
+    throw new Error(`Required input #${id} not found`);
+  }
+  return el;
+}
+
+function getButton(id: string): HTMLButtonElement {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLButtonElement)) {
+    throw new Error(`Required button #${id} not found`);
+  }
+  return el;
+}
+
+function getDiv(id: string): HTMLDivElement {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLDivElement)) {
+    throw new Error(`Required div #${id} not found`);
+  }
+  return el;
+}
+
+const apiKeyInput = getInput("apiKey");
+const saveBtn = getButton("saveBtn");
+const toggleBtn = getButton("toggleBtn");
+const statusEl = getDiv("status");
 
 let isVisible = false;
 
@@ -43,4 +67,4 @@ toggleBtn.addEventListener("click", () => {
   toggleBtn.textContent = isVisible ? "Hide Key" : "Show Key";
 });
 
-init();
+void init();

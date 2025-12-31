@@ -67,7 +67,8 @@ async function build() {
     const srcPath = join(ROOT, src);
     if (existsSync(srcPath)) {
       const destPath = join(DIST, dest);
-      mkdirSync(join(DIST, dest.split("/")[0]!), { recursive: true });
+      const destDir = dest.split("/")[0] ?? "";
+      mkdirSync(join(DIST, destDir), { recursive: true });
       cpSync(srcPath, destPath);
       console.log(`Copied ${dest}`);
     }

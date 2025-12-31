@@ -8,6 +8,6 @@
   ],
   "rules": {
     "no-non-null-assertion": "error",
-    "ts-eslint-js/consistent-type-assertions": ["warn", { "assertionStyle": "never" }]
+    "ts-eslint-js/consistent-type-assertions": ["error", { "assertionStyle": "never" }]
   }
 }

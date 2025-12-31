@@ -6,10 +6,6 @@
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun run build.ts --watch",
-    "lint": "oxlint src/",
-    "lint:fix": "oxlint --fix src/",
-    "fmt": "oxfmt --write src/",
-    "fmt:check": "oxfmt --check src/",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

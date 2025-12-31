@@ -1,6 +1,6 @@
 import { build } from "bun";
 import { readdirSync, existsSync, rmSync } from "fs";
-import { resolve, join, relative } from "path";
+import { resolve, join } from "path";
 
 const isWatch = process.argv.includes("--watch");
 const sitesDir = resolve(import.meta.dir, "src/sites");

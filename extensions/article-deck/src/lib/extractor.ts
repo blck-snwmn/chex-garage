@@ -8,11 +8,19 @@ export interface ParsedArticle {
   content: string;
 }
 
+// Type predicate for Document nodes (works with both browser and JSDOM)
+function isDocumentNode(node: Node): node is Document {
+  return node.nodeType === 9; // DOCUMENT_NODE
+}
+
 /**
  * Parse HTML document using Readability to extract main article content
  */
 export function parseArticle(doc: Document): ParsedArticle {
-  const clonedDoc = doc.cloneNode(true) as Document;
+  const clonedDoc = doc.cloneNode(true);
+  if (!isDocumentNode(clonedDoc)) {
+    throw new Error("Failed to clone document");
+  }
   const reader = new Readability(clonedDoc);
   const article = reader.parse();
 
@@ -21,8 +29,8 @@ export function parseArticle(doc: Document): ParsedArticle {
   }
 
   return {
-    title: article.title,
-    content: article.content,
+    title: article.title ?? "",
+    content: article.content ?? "",
   };
 }
 
