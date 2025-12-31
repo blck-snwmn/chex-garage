@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Graft Extension",
+  "version": "0.1.0",
+  "description": "Personal UserScript Manager powered by Bun",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["sites/gemini.google.com/index.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "graft",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun run build.ts",
+    "dev": "bun run build.ts --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/chrome": "0.1.32",
+    "sharp": "^0.34.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
