@@ -1,0 +1,38 @@
+{
+  "name": "article-deck",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "watch": "bun run scripts/build.ts --watch",
+    "clean": "rm -rf dist",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
+    "fmt": "oxfmt src",
+    "fmt:check": "oxfmt --check src",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/jsdom": "^27.0.0",
+    "chrome-types": "^0.1.403",
+    "jsdom": "^27.4.0",
+    "oxfmt": "^0.21.0",
+    "oxlint": "^1.36.0",
+    "sharp": "^0.34.5",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@marp-team/marp-core": "^4.2.0",
+    "@mozilla/readability": "^0.6.0",
+    "@types/turndown": "^5.0.6",
+    "turndown": "^7.2.2",
+    "turndown-plugin-gfm": "^1.0.2"
+  }
+}
