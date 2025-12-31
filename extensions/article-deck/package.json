@@ -1,8 +1,8 @@
 {
   "name": "@chex/article-deck",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "bun run scripts/build.ts",
     "watch": "bun run scripts/build.ts --watch",
@@ -10,6 +10,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@marp-team/marp-core": "^4.2.0",
+    "@mozilla/readability": "^0.6.0",
+    "@types/turndown": "^5.0.6",
+    "turndown": "^7.2.2",
+    "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -21,13 +29,5 @@
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "@marp-team/marp-core": "^4.2.0",
-    "@mozilla/readability": "^0.6.0",
-    "@types/turndown": "^5.0.6",
-    "turndown": "^7.2.2",
-    "turndown-plugin-gfm": "^1.0.2"
   }
 }

@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Reprise is a Chrome extension for YouTube video loop control. Features:
+
 - Set custom start/end times to loop a specific section of YouTube videos
 - Side Panel UI for configuration (start time, end time, loop name)
 - Manage multiple loops per video with easy activation/deactivation
@@ -71,6 +72,7 @@ git push origin v0.x.x
 ```
 
 CIが自動で以下を実行:
+
 - ビルド
 - `reprise-v0.x.x.zip` を作成
 - GitHub Releaseを作成（リリースノートは自動生成）
@@ -94,6 +96,7 @@ setVideo(findVideo());
 ## Architecture
 
 This is a Chrome Extension (Manifest V3) built with:
+
 - **Runtime**: Bun
 - **Language**: TypeScript (strict mode)
 - **UI**: React (for Side Panel)

@@ -1,8 +1,8 @@
 {
   "name": "@chex/graft",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun run build.ts --watch",

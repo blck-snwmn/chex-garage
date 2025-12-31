@@ -5,6 +5,7 @@ A personal userscript manager as a Chrome extension
 ## Supported Sites
 
 ### gemini.google.com
+
 - Adds an "Open in new tab" button to the conversation list
 
 ## Setup

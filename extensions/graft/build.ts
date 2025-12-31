@@ -41,7 +41,7 @@ const runBuild = async () => {
   const result = await build({
     entrypoints: entrypoints,
     outdir: outDir, // dist/
-    root: "src",    // This should result in dist/sites/domain.com/index.js
+    root: "src", // This should result in dist/sites/domain.com/index.js
     target: "browser",
     minify: false,
     splitting: false, // Bundle into single file
