@@ -3,7 +3,7 @@
     "composite": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "Preserve",
     "moduleDetection": "force",
     "allowJs": true,
 
