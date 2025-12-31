@@ -1,6 +1,7 @@
-import { copyFileSync, mkdirSync } from "fs";
+import { copyFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { $ } from "bun";
+import sharp from "sharp";
 
 const ROOT = import.meta.dir.replace("/scripts", "");
 const dist = join(ROOT, "dist");
@@ -63,5 +64,20 @@ await $`bunx tailwindcss -i ${join(ROOT, "src/sidepanel/index.css")} -o ${join(d
 // Copy static files
 copyFileSync(join(ROOT, "manifest.json"), join(dist, "manifest.json"));
 copyFileSync(join(ROOT, "src/sidepanel/index.html"), join(dist, "sidepanel/index.html"));
+
+// Generate icons from SVG
+const iconSvg = join(ROOT, "icons/icon.svg");
+const iconsDest = join(dist, "icons");
+if (existsSync(iconSvg)) {
+  console.log("Generating icons...");
+  mkdirSync(iconsDest, { recursive: true });
+  const sizes = [16, 48, 128];
+  for (const size of sizes) {
+    await sharp(iconSvg)
+      .resize(size, size)
+      .png()
+      .toFile(join(iconsDest, `icon-${size}.png`));
+  }
+}
 
 console.log("Build complete!");

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#1e293b"/>
+
+  <!-- Loop arrows (repeat symbol) -->
+  <path d="M40 50 L40 35 L25 50 L40 65 L40 50 L88 50
+           Q100 50 100 62 L100 66"
+        fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M88 78 L88 93 L103 78 L88 63 L88 78 L40 78
+           Q28 78 28 66 L28 62"
+        fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
