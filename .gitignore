@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+
+# output
+dist
+*.tgz
+
+# turbo
+.turbo
+
+# coverage
+coverage
+*.lcov
+
+# logs
+logs
+*.log
+
+# env
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
