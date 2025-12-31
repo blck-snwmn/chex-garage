@@ -2,12 +2,12 @@ console.log("Graft: Gemini script loaded");
 
 // Update browser tab title based on current chat title
 function updateBrowserTabTitle() {
-  const titleElement = document.querySelector('span.conversation-title');
+  const titleElement = document.querySelector("span.conversation-title");
   if (titleElement && titleElement.textContent?.trim()) {
     const chatTitle = titleElement.textContent.trim();
     document.title = `${chatTitle} - Gemini`;
   } else {
-    document.title = 'Gemini';
+    document.title = "Gemini";
   }
 }
 
@@ -15,7 +15,7 @@ function updateBrowserTabTitle() {
 function extractConversationId(element: Element): string | null {
   const jslog = element.getAttribute("jslog");
   if (!jslog) return null;
-  
+
   // jslog="...;BardVeMetadataKey:[...,[&quot;c_637dd0c444724b12&quot;,null,0]];..."
   // ID is c_ + 16 hex characters
   const match = jslog.match(/c_([a-f0-9]{16})/);
@@ -26,10 +26,10 @@ function extractConversationId(element: Element): string | null {
 // Inject global styles
 // Adjust styles to prevent overlap between conversation title and action button
 function injectGlobalStyles() {
-  if (document.getElementById('graft-global-styles')) return;
+  if (document.getElementById("graft-global-styles")) return;
 
-  const style = document.createElement('style');
-  style.id = 'graft-global-styles';
+  const style = document.createElement("style");
+  style.id = "graft-global-styles";
   style.textContent = `
     /* Add padding to the right of conversation title to prevent overlap with the action button */
     .conversation-title {
@@ -79,34 +79,36 @@ function processConversationItem(element: Element) {
   // Find the action container
   // It might be a sibling of the parent or inside the element
   // element itself is <div data-test-id="conversation">
-  
+
   // Structure 1: Container is a sibling (as seen in reference.html)
   // <div class="conversation-items-container">
   //   <div data-test-id="conversation">...</div>
   //   <div class="conversation-actions-container">...</div>
   // </div>
-  let actionsContainer = element.parentElement?.querySelector('.conversation-actions-container');
-  
+  let actionsContainer = element.parentElement?.querySelector(".conversation-actions-container");
+
   // Structure 2: Container is inside the element (fallback)
   if (!actionsContainer) {
-    actionsContainer = element.querySelector('.conversation-actions-container');
+    actionsContainer = element.querySelector(".conversation-actions-container");
   }
 
   if (!actionsContainer) return;
 
   // Check if button already exists (prevent duplicates)
-  if (actionsContainer.querySelector('.graft-open-tab-button')) {
+  if (actionsContainer.querySelector(".graft-open-tab-button")) {
     return;
   }
 
   // Find the menu button (three dots)
-  const menuButton = actionsContainer.querySelector('.conversation-actions-menu-button') || actionsContainer.querySelector('button');
-  
+  const menuButton =
+    actionsContainer.querySelector(".conversation-actions-menu-button") ||
+    actionsContainer.querySelector("button");
+
   // Create button
-  const openButton = document.createElement('button');
-  openButton.className = 'graft-open-tab-button';
-  openButton.title = 'Open in new tab';
-  
+  const openButton = document.createElement("button");
+  openButton.className = "graft-open-tab-button";
+  openButton.title = "Open in new tab";
+
   // SVG Icon
   openButton.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
@@ -115,11 +117,11 @@ function processConversationItem(element: Element) {
   `;
 
   // Click event
-  openButton.addEventListener('click', (e) => {
+  openButton.addEventListener("click", (e) => {
     e.stopPropagation();
     e.preventDefault();
     const url = `https://gemini.google.com/app/${conversationId}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   });
 
   // Insert position
@@ -164,8 +166,8 @@ function init() {
 }
 
 // Execution
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
 } else {
   init();
 }
