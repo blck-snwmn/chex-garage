@@ -1,7 +1,7 @@
 import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
 import { gfm } from "turndown-plugin-gfm";
-import type { ExtractedContent } from "../types/index.ts";
+import type { ExtractedContent } from "./types.ts";
 
 export interface ParsedArticle {
   title: string;

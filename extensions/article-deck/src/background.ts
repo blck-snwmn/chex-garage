@@ -1,7 +1,7 @@
-import { generateSlides } from "../lib/gemini.ts";
-import { convertToSlide } from "../lib/marp.ts";
-import { getApiKey } from "../lib/storage.ts";
-import type { MessageRequest, GenerateSlideResponse, ExtractedContent } from "../types/index.ts";
+import { generateSlides } from "./gemini.ts";
+import { convertToSlide } from "./marp.ts";
+import { getApiKey } from "./storage.ts";
+import type { MessageRequest, GenerateSlideResponse, ExtractedContent } from "./types.ts";
 
 chrome.runtime.onMessage.addListener(
   (

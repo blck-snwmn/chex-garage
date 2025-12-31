@@ -1,4 +1,4 @@
-import { getApiKey, setApiKey } from "../lib/storage.ts";
+import { getApiKey, setApiKey } from "../storage.ts";
 
 function getInput(id: string): HTMLInputElement {
   const el = document.getElementById(id);

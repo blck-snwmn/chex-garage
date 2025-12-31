@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { ExtractedContent } from "../types/index.ts";
+import type { ExtractedContent } from "./types.ts";
 
 const SYSTEM_PROMPT = `You are an expert at creating presentations.
 Convert the following article content into Marp format slides.

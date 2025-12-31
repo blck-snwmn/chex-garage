@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run build.ts",
-    "dev": "bun --watch run build.ts",
+    "build": "bun run scripts/build.ts",
+    "dev": "bun --watch run scripts/build.ts",
     "lint": "oxlint --type-aware --type-check --deny-warnings .",
     "test": "vitest run",
     "test:watch": "vitest",

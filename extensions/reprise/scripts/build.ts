@@ -1,15 +1,17 @@
 import { copyFileSync, mkdirSync } from "fs";
+import { join } from "path";
 import { $ } from "bun";
 
-const dist = "./dist";
+const ROOT = import.meta.dir.replace("/scripts", "");
+const dist = join(ROOT, "dist");
 
 // Clean and create dist directory
 mkdirSync(dist, { recursive: true });
-mkdirSync(`${dist}/sidepanel`, { recursive: true });
+mkdirSync(join(dist, "sidepanel"), { recursive: true });
 
 // Build content script
 const contentBuild = await Bun.build({
-  entrypoints: ["./src/content.ts"],
+  entrypoints: [join(ROOT, "src/content.ts")],
   outdir: dist,
   target: "browser",
 });
@@ -27,7 +29,7 @@ if (contentOutput) {
 
 // Build background service worker
 const backgroundBuild = await Bun.build({
-  entrypoints: ["./src/background.ts"],
+  entrypoints: [join(ROOT, "src/background.ts")],
   outdir: dist,
   target: "browser",
 });
@@ -45,8 +47,8 @@ if (backgroundOutput) {
 
 // Build sidepanel JS
 const sidepanelBuild = await Bun.build({
-  entrypoints: ["./src/sidepanel/main.tsx"],
-  outdir: `${dist}/sidepanel`,
+  entrypoints: [join(ROOT, "src/sidepanel/main.tsx")],
+  outdir: join(dist, "sidepanel"),
   target: "browser",
 });
 
@@ -56,10 +58,10 @@ if (!sidepanelBuild.success) {
 }
 
 // Build CSS with Tailwind
-await $`bunx tailwindcss -i ./src/sidepanel/index.css -o ${dist}/sidepanel/main.css --minify`;
+await $`bunx tailwindcss -i ${join(ROOT, "src/sidepanel/index.css")} -o ${join(dist, "sidepanel/main.css")} --minify`;
 
 // Copy static files
-copyFileSync("./manifest.json", `${dist}/manifest.json`);
-copyFileSync("./src/sidepanel/index.html", `${dist}/sidepanel/index.html`);
+copyFileSync(join(ROOT, "manifest.json"), join(dist, "manifest.json"));
+copyFileSync(join(ROOT, "src/sidepanel/index.html"), join(dist, "sidepanel/index.html"));
 
 console.log("Build complete!");

@@ -1,5 +1,5 @@
 import { Marp } from "@marp-team/marp-core";
-import type { SlideResult } from "../types/index.ts";
+import type { SlideResult } from "./types.ts";
 
 export function convertToSlide(markdown: string): SlideResult {
   const marp = new Marp({

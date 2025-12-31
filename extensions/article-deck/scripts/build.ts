@@ -14,8 +14,8 @@ mkdirSync(DIST, { recursive: true });
 
 // Entry points configuration
 const entryPoints = [
-  { entry: "src/background/index.ts", outdir: "background" },
-  { entry: "src/content/index.ts", outdir: "content" },
+  { entry: "src/background.ts", outdir: "background" },
+  { entry: "src/content.ts", outdir: "content" },
   { entry: "src/popup/index.ts", outdir: "popup" },
   { entry: "src/options/index.ts", outdir: "options" },
   { entry: "src/preview/index.ts", outdir: "preview" },

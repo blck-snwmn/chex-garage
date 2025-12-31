@@ -3,8 +3,9 @@ import { readdirSync, existsSync, rmSync } from "fs";
 import { resolve, join } from "path";
 
 const isWatch = process.argv.includes("--watch");
-const sitesDir = resolve(import.meta.dir, "src/sites");
-const outDir = resolve(import.meta.dir, "dist");
+const ROOT = import.meta.dir.replace("/scripts", "");
+const sitesDir = resolve(ROOT, "src/sites");
+const outDir = resolve(ROOT, "dist");
 
 // Cleanup
 if (existsSync(outDir)) {
@@ -41,7 +42,7 @@ const runBuild = async () => {
   const result = await build({
     entrypoints: entrypoints,
     outdir: outDir, // dist/
-    root: "src", // This should result in dist/sites/domain.com/index.js
+    root: join(ROOT, "src"), // This should result in dist/sites/domain.com/index.js
     target: "browser",
     minify: false,
     splitting: false, // Bundle into single file
@@ -61,7 +62,7 @@ const runBuild = async () => {
 await runBuild();
 
 // Copy manifest.json to dist
-const manifestSrc = resolve(import.meta.dir, "manifest.json");
+const manifestSrc = resolve(ROOT, "manifest.json");
 const manifestDest = resolve(outDir, "manifest.json");
 if (existsSync(manifestSrc)) {
   console.log("Copying manifest.json to dist...");
@@ -70,7 +71,7 @@ if (existsSync(manifestSrc)) {
 }
 
 // Generate icons from SVG to dist
-const iconSvg = resolve(import.meta.dir, "icons/icon.svg");
+const iconSvg = resolve(ROOT, "icons/icon.svg");
 const iconsDest = resolve(outDir, "icons");
 if (existsSync(iconSvg)) {
   console.log("Generating icons...");

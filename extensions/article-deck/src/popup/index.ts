@@ -3,7 +3,7 @@ import type {
   GenerateSlideRequest,
   GenerateSlideResponse,
   SlideResult,
-} from "../types/index.ts";
+} from "../types.ts";
 
 function isGenerateSlideResponse(value: unknown): value is GenerateSlideResponse {
   return (

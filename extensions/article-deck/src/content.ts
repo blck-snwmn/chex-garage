@@ -1,5 +1,5 @@
-import { extractContent } from "../lib/extractor.ts";
-import type { ExtractContentResponse } from "../types/index.ts";
+import { extractContent } from "./extractor.ts";
+import type { ExtractContentResponse } from "./types.ts";
 
 // This script is injected via scripting.executeScript
 // It extracts the page content and returns it

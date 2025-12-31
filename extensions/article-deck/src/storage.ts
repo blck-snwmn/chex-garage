@@ -1,4 +1,4 @@
-import type { StorageData } from "../types/index.ts";
+import type { StorageData } from "./types.ts";
 
 export async function getApiKey(): Promise<string | undefined> {
   const result = await chrome.storage.local.get("apiKey");
