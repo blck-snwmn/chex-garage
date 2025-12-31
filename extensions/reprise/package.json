@@ -1,0 +1,35 @@
+{
+  "name": "reprise",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun run build.ts",
+    "dev": "bun --watch run build.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint --type-aware --type-check --deny-warnings",
+    "lint:fix": "oxlint --type-aware --type-check --deny-warnings --fix",
+    "fmt": "oxfmt --write src",
+    "fmt:check": "oxfmt src"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "@types/bun": "latest",
+    "@types/chrome": "^0.1.32",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "oxfmt": "^0.20.0",
+    "oxlint": "^1.35.0",
+    "oxlint-tsgolint": "^0.10.0",
+    "tailwindcss": "^4.1.18",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "jsPlugins": [
+    {
+      "name": "ts-eslint-js",
+      "specifier": "@typescript-eslint/eslint-plugin"
+    }
+  ],
+  "rules": {
+    "no-non-null-assertion": "error",
+    "ts-eslint-js/consistent-type-assertions": ["error", { "assertionStyle": "never" }]
+  }
+}
