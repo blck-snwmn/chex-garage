@@ -1,17 +1,23 @@
 {
-  "name": "graft",
+  "name": "@chex/graft",
+  "version": "0.1.0",
   "type": "module",
   "private": true,
   "scripts": {
     "build": "bun run build.ts",
-    "dev": "bun run build.ts --watch"
+    "dev": "bun run build.ts --watch",
+    "lint": "oxlint src/",
+    "lint:fix": "oxlint --fix src/",
+    "fmt": "oxfmt --write src/",
+    "fmt:check": "oxfmt --check src/",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/chrome": "0.1.32",
-    "sharp": "^0.34.5"
-  },
-  "peerDependencies": {
+    "@types/chrome": "^0.0.287",
+    "oxfmt": "^0.21.0",
+    "oxlint": "^1.36.0",
+    "sharp": "^0.34.5",
     "typescript": "^5"
   }
 }

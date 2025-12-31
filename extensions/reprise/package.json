@@ -1,5 +1,6 @@
 {
-  "name": "reprise",
+  "name": "@chex/reprise",
+  "version": "2.0.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -10,7 +11,8 @@
     "lint": "oxlint --type-aware --type-check --deny-warnings",
     "lint:fix": "oxlint --type-aware --type-check --deny-warnings --fix",
     "fmt": "oxfmt --write src",
-    "fmt:check": "oxfmt src"
+    "fmt:check": "oxfmt --check src",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
