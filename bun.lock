@@ -5,14 +5,14 @@
     "": {
       "name": "chex-garage",
       "devDependencies": {
-        "@changesets/cli": "^2.27.0",
-        "@types/bun": "^1.3.5",
-        "@typescript-eslint/eslint-plugin": "^8.50.0",
-        "oxfmt": "^0.21.0",
-        "oxlint": "^1.36.0",
-        "oxlint-tsgolint": "^0.10.0",
-        "turbo": "^2.3.0",
-        "typescript": "^5",
+        "@changesets/cli": "2.29.8",
+        "@types/bun": "1.3.5",
+        "@typescript-eslint/eslint-plugin": "8.51.0",
+        "oxfmt": "0.21.0",
+        "oxlint": "1.36.0",
+        "oxlint-tsgolint": "0.10.0",
+        "turbo": "2.7.2",
+        "typescript": "5.9.3",
       },
     },
     "extensions/article-deck": {
@@ -28,11 +28,11 @@
       },
       "devDependencies": {
         "@types/bun": "latest",
-        "@types/jsdom": "^27.0.0",
-        "chrome-types": "^0.1.403",
-        "jsdom": "^27.4.0",
-        "sharp": "^0.34.5",
-        "vitest": "^4.0.16",
+        "@types/jsdom": "27.0.0",
+        "chrome-types": "0.1.403",
+        "jsdom": "27.4.0",
+        "sharp": "0.34.5",
+        "vitest": "4.0.16",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -43,8 +43,8 @@
       "version": "0.1.0",
       "devDependencies": {
         "@types/bun": "latest",
-        "@types/chrome": "^0.0.287",
-        "sharp": "^0.34.5",
+        "@types/chrome": "0.0.287",
+        "sharp": "0.34.5",
       },
     },
     "extensions/reprise": {
@@ -55,13 +55,13 @@
         "react-dom": "^19.2.3",
       },
       "devDependencies": {
-        "@tailwindcss/cli": "^4.1.18",
+        "@tailwindcss/cli": "4.1.18",
         "@types/bun": "latest",
-        "@types/chrome": "^0.1.32",
+        "@types/chrome": "0.1.32",
         "@types/react": "19.2.7",
         "@types/react-dom": "19.2.3",
-        "tailwindcss": "^4.1.18",
-        "vitest": "^4.0.16",
+        "tailwindcss": "4.1.18",
+        "vitest": "4.0.16",
       },
       "peerDependencies": {
         "typescript": "^5",
