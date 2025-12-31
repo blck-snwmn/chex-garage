@@ -69,6 +69,23 @@ if (existsSync(manifestSrc)) {
   fs.copyFileSync(manifestSrc, manifestDest);
 }
 
+// Generate icons from SVG to dist
+const iconSvg = resolve(import.meta.dir, "icons/icon.svg");
+const iconsDest = resolve(outDir, "icons");
+if (existsSync(iconSvg)) {
+  console.log("Generating icons...");
+  const fs = await import("fs");
+  const sharp = (await import("sharp")).default;
+  fs.mkdirSync(iconsDest, { recursive: true });
+  const sizes = [16, 48, 128];
+  for (const size of sizes) {
+    await sharp(iconSvg)
+      .resize(size, size)
+      .png()
+      .toFile(join(iconsDest, `icon-${size}.png`));
+  }
+}
+
 if (isWatch) {
   console.log("Watching for changes in src/sites...");
   // Simple Watch: Monitor changes under src/sites and rebuild
