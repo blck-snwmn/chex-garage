@@ -139,7 +139,7 @@ function scanAndProcess() {
 }
 
 // MutationObserver setup
-const observer = new MutationObserver((_mutations) => {
+const observer = new MutationObserver(() => {
   // Execute scan on any change (could be throttled, but simple enough for now)
   scanAndProcess();
   // Update browser tab title when DOM changes
