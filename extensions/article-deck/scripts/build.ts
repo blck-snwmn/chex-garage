@@ -1,5 +1,6 @@
-import { existsSync, mkdirSync, cpSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, cpSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import sharp from "sharp";
 
 const isWatch = process.argv.includes("--watch");
 const ROOT = import.meta.dir.replace("/scripts", "");
@@ -88,12 +89,16 @@ async function build() {
     }
   }
 
-  // Copy icons
-  const iconsDir = join(ROOT, "public/icons");
-  const distIconsDir = join(DIST, "icons");
-  if (existsSync(iconsDir)) {
-    cpSync(iconsDir, distIconsDir, { recursive: true });
-    console.log("Copied icons");
+  // Generate icons from SVG
+  const iconsDir = join(DIST, "icons");
+  mkdirSync(iconsDir, { recursive: true });
+  const svgBuffer = readFileSync(join(ROOT, "icons/icon.svg"));
+  for (const size of [16, 48, 128]) {
+    await sharp(svgBuffer)
+      .resize(size, size)
+      .png()
+      .toFile(join(iconsDir, `icon${size}.png`));
+    console.log(`Generated icon${size}.png`);
   }
 
   console.log("\nBuild complete! Load extension from: dist/");
