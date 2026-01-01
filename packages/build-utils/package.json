@@ -1,0 +1,16 @@
+{
+  "name": "@chex/build-utils",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --type-aware --type-check --deny-warnings ."
+  },
+  "peerDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

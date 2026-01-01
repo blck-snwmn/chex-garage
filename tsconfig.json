@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "packages/build-utils" },
     { "path": "extensions/graft" },
     { "path": "extensions/article-deck" },
     { "path": "extensions/reprise" },
