@@ -20,7 +20,7 @@
     },
     "extensions/article-deck": {
       "name": "@chex/article-deck",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@google/generative-ai": "^0.24.1",
         "@marp-team/marp-core": "^4.2.0",
@@ -31,20 +31,20 @@
       "devDependencies": {
         "@chex/build-utils": "workspace:*",
         "@types/jsdom": "27.0.0",
-        "@types/turndown": "^5.0.6",
+        "@types/turndown": "5.0.6",
         "jsdom": "27.4.0",
       },
     },
     "extensions/graft": {
       "name": "@chex/graft",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "devDependencies": {
         "@chex/build-utils": "workspace:*",
       },
     },
     "extensions/reprise": {
       "name": "@chex/reprise",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "dependencies": {
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
