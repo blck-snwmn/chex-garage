@@ -1,14 +1,55 @@
-import type { CssConfig } from "../types.ts";
+import { existsSync, mkdirSync, cpSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { $ } from "bun";
+import type { CssConfig, CopyFile } from "../types.ts";
 
 /**
  * Process CSS based on configuration
- * Implementation will be added in Phase 3
  */
-export async function processCss(_root: string, _dist: string, _config: CssConfig): Promise<void> {
-  // Placeholder - will be implemented in Phase 3
-  // For now, do nothing for type: "none"
-  if (_config.type === "none") {
-    return;
+export async function processCss(root: string, dist: string, config: CssConfig): Promise<void> {
+  switch (config.type) {
+    case "none":
+      return;
+
+    case "copy":
+      await processCssCopy(root, dist, config.files);
+      break;
+
+    case "tailwind":
+      await processCssTailwind(root, dist, config.input, config.output);
+      break;
   }
-  throw new Error("Not implemented yet - Phase 3");
+}
+
+/**
+ * Copy CSS files to dist
+ */
+async function processCssCopy(root: string, dist: string, files: CopyFile[]): Promise<void> {
+  for (const file of files) {
+    const srcPath = join(root, file.src);
+    if (existsSync(srcPath)) {
+      const destPath = join(dist, file.dest);
+      mkdirSync(dirname(destPath), { recursive: true });
+      cpSync(srcPath, destPath);
+      console.log(`Copied ${file.dest}`);
+    }
+  }
+}
+
+/**
+ * Compile CSS with Tailwind
+ */
+async function processCssTailwind(
+  root: string,
+  dist: string,
+  input: string,
+  output: string,
+): Promise<void> {
+  const inputPath = join(root, input);
+  const outputPath = join(dist, output);
+
+  mkdirSync(dirname(outputPath), { recursive: true });
+
+  await $`bunx tailwindcss -i ${inputPath} -o ${outputPath} --minify`;
+  console.log(`Built Tailwind CSS: ${output}`);
 }
