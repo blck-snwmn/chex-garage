@@ -16,15 +16,12 @@
     "@google/generative-ai": "^0.24.1",
     "@marp-team/marp-core": "^4.2.0",
     "@mozilla/readability": "^0.6.0",
-    "@types/turndown": "^5.0.6",
     "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
     "@types/jsdom": "27.0.0",
+    "@types/turndown": "^5.0.6",
     "jsdom": "27.4.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
   }
 }
