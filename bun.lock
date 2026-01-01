@@ -64,10 +64,6 @@
         "sharp": "^0.34.0",
       },
     },
-    "packages/tsconfig": {
-      "name": "@chex/tsconfig",
-      "version": "0.0.0",
-    },
   },
   "packages": {
     "@acemir/cssom": ["@acemir/cssom@0.9.30", "", {}, "sha512-9CnlMCI0LmCIq0olalQqdWrJHPzm0/tw3gzOA9zJSgvFX7Xau3D24mAGa4BtwxwY69nsuJW6kQqqCzf/mEcQgg=="],
@@ -121,8 +117,6 @@
     "@chex/graft": ["@chex/graft@workspace:extensions/graft"],
 
     "@chex/reprise": ["@chex/reprise@workspace:extensions/reprise"],
-
-    "@chex/tsconfig": ["@chex/tsconfig@workspace:packages/tsconfig"],
 
     "@csstools/color-helpers": ["@csstools/color-helpers@5.1.0", "", {}, "sha512-S11EXWJyy0Mz5SYvRmY8nJYTFFd1LCNV+7cXyAgQtOOuzb4EsgfqDufL+9esx72/eLhsRdGZwaldu/h+E4t4BA=="],
 
