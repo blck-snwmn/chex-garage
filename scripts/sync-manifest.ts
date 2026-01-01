@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { Glob } from "bun";
 
 const glob = new Glob("extensions/*/package.json");
