@@ -37,13 +37,13 @@ bun run dev        # Watch mode
 
 ## After Code Changes
 
-コード編集後は以下のコマンドを順番に実行:
+Run these commands in order after editing code:
 
 ```bash
-bun run fmt        # 1. コードフォーマット
-bun run lint       # 2. リントチェック
-bun run test       # 3. テスト実行
-bun run build      # 4. ビルド確認
+bun run fmt        # 1. Format code
+bun run lint       # 2. Lint check
+bun run test       # 3. Run tests
+bun run build      # 4. Verify build
 ```
 
 ## Architecture
@@ -55,7 +55,7 @@ chex-garage/
 │   ├── graft/          # Image/media handling
 │   └── reprise/        # YouTube loop control (React + Tailwind)
 ├── packages/
-│   └── tsconfig/       # Shared TypeScript config
+│   └── build-utils/    # Shared build utilities (icon generation with sharp)
 └── scripts/            # Build/release scripts
 ```
 
@@ -71,13 +71,15 @@ chex-garage/
 - Tasks: `build` (depends on upstream builds), `test` (depends on upstream builds)
 - Each extension has custom `build.ts` script using Bun's bundler
 - Build outputs go to `dist/` directory
-- Inputs/outputs configured for caching: `src/**`, `icons/**`, `manifest.json` → `dist/**`
+- Inputs/outputs configured for caching: `src/**`, `icons/**`, `scripts/**`, `manifest.json`, `package.json` → `dist/**`
 
 ### Extension-Specific Notes
 
-**reprise**: Has detailed CLAUDE.md with architecture diagram, coding rules (use `setVideo()` for video variable assignment), and release process (tag-based CI).
+Each extension has its own `CLAUDE.md` with detailed documentation. See:
 
-**article-deck**: Uses Vitest for testing, depends on `@mozilla/readability`, `turndown`, and `@google/generative-ai`.
+- `extensions/reprise/CLAUDE.md` - YouTube loop control
+- `extensions/article-deck/CLAUDE.md` - Article to slides
+- `extensions/graft/CLAUDE.md` - UserScript manager
 
 ## Tooling
 
