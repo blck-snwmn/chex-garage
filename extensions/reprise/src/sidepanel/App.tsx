@@ -27,10 +27,12 @@ export default function App() {
 
   const loadData = useCallback(async () => {
     try {
-      const info = await sendMessage<VideoInfoResponse>({ type: "GET_VIDEO_INFO" });
-      setVideoInfo(info ?? null);
+      const [info, loopsData] = await Promise.all([
+        sendMessage<VideoInfoResponse>({ type: "GET_VIDEO_INFO" }),
+        sendMessage<LoopsResponse>({ type: "GET_LOOPS" }),
+      ]);
 
-      const loopsData = await sendMessage<LoopsResponse>({ type: "GET_LOOPS" });
+      setVideoInfo(info ?? null);
       if (loopsData) {
         setTracks(loopsData.tracks);
         setLoopSettings(loopsData.loopSettings);
