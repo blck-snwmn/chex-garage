@@ -1,4 +1,15 @@
 // @chex/build-utils - Chrome Extension Build Utilities
-// Exports will be added in Phase 2
 
-export const VERSION = "0.0.1";
+export { buildExtension } from "./core/build.ts";
+export { validateManifest } from "./core/validate.ts";
+export { generateIcons } from "./core/icons.ts";
+
+export type {
+  ExtensionBuildConfig,
+  EntryPointConfig,
+  StaticEntry,
+  CssConfig,
+  CopyFile,
+  BunBuildOverrides,
+  ResolvedEntry,
+} from "./types.ts";
