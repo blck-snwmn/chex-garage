@@ -16,7 +16,7 @@
     "changeset": "changeset",
     "version": "changeset version && bun run sync-manifest",
     "sync-manifest": "bun scripts/sync-manifest.ts",
-    "release": "bun run version && changeset tag && bun scripts/push-tags.ts"
+    "release": "bun run version && bun scripts/push-tags.ts"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.8",
