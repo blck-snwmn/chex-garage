@@ -57,10 +57,11 @@ export default function App() {
   useEffect(() => {
     debouncedLoadData();
 
-    const handleMessage = (message: Message) => {
+    const handleMessage = (message: Message): undefined => {
       if (message.type === "VIDEO_CHANGED" || message.type === "VIDEO_METADATA_LOADED") {
         debouncedLoadData();
       }
+      return undefined;
     };
 
     const handleTabActivated = () => {
