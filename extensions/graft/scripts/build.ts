@@ -1,5 +1,5 @@
 import { build } from "bun";
-import { readdirSync, existsSync, rmSync } from "fs";
+import { readdirSync, existsSync, rmSync, readFileSync } from "fs";
 import { resolve, join } from "path";
 
 const isWatch = process.argv.includes("--watch");
@@ -87,6 +87,9 @@ if (existsSync(iconSvg)) {
   }
 }
 
+// Validate manifest paths
+validateManifest();
+
 if (isWatch) {
   console.log("Watching for changes in src/sites...");
   // Simple Watch: Monitor changes under src/sites and rebuild
@@ -97,4 +100,67 @@ if (isWatch) {
     console.log(`Change detected: ${filename}`);
     await runBuild();
   });
+}
+
+function validateManifest() {
+  console.log("Validating manifest paths...");
+
+  const manifestPath = resolve(outDir, "manifest.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+  const missing: string[] = [];
+
+  const checkPath = (filePath: string | undefined) => {
+    if (filePath && !existsSync(resolve(outDir, filePath))) {
+      missing.push(filePath);
+    }
+  };
+
+  // background.service_worker
+  checkPath(manifest.background?.service_worker);
+
+  // action.default_popup
+  checkPath(manifest.action?.default_popup);
+
+  // action.default_icon
+  if (manifest.action?.default_icon) {
+    for (const icon of Object.values(manifest.action.default_icon)) {
+      if (typeof icon === "string") {
+        checkPath(icon);
+      }
+    }
+  }
+
+  // icons
+  if (manifest.icons) {
+    for (const icon of Object.values(manifest.icons)) {
+      if (typeof icon === "string") {
+        checkPath(icon);
+      }
+    }
+  }
+
+  // options_page
+  checkPath(manifest.options_page);
+
+  // content_scripts
+  if (manifest.content_scripts) {
+    for (const cs of manifest.content_scripts) {
+      for (const js of cs.js ?? []) {
+        checkPath(js);
+      }
+      for (const css of cs.css ?? []) {
+        checkPath(css);
+      }
+    }
+  }
+
+  if (missing.length > 0) {
+    console.error("\n❌ Missing files referenced in manifest.json:");
+    for (const path of missing) {
+      console.error(`   - ${path}`);
+    }
+    process.exit(1);
+  }
+
+  console.log("✓ All manifest paths validated");
 }
