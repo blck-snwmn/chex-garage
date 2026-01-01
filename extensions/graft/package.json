@@ -7,7 +7,9 @@
     "build": "bun run scripts/build.ts",
     "dev": "bun --watch run scripts/build.ts",
     "lint": "oxlint --type-aware --type-check --deny-warnings .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@chex/build-utils": "workspace:*"
