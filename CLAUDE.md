@@ -32,8 +32,7 @@ bun run fmt:check
 # Per-extension commands (from extension directory)
 bun run build      # Build single extension
 bun run test       # Run extension tests
-bun run dev        # Watch mode (reprise, graft)
-bun run watch      # Watch mode (article-deck)
+bun run dev        # Watch mode
 ```
 
 ## After Code Changes

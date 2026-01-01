@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "bun run scripts/build.ts",
-    "watch": "bun run scripts/build.ts --watch",
+    "dev": "bun run scripts/build.ts --watch",
     "clean": "rm -rf dist",
     "lint": "oxlint --type-aware --type-check --deny-warnings .",
     "test": "vitest run",
