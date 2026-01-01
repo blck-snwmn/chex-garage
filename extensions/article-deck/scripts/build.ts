@@ -98,8 +98,8 @@ async function build() {
     await sharp(svgBuffer)
       .resize(size, size)
       .png()
-      .toFile(join(iconsDir, `icon${size}.png`));
-    console.log(`Generated icon${size}.png`);
+      .toFile(join(iconsDir, `icon-${size}.png`));
+    console.log(`Generated icon-${size}.png`);
   }
 
   console.log("\nBuild complete! Load extension from: dist/");
