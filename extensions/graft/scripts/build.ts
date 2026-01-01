@@ -2,7 +2,6 @@ import { build } from "bun";
 import { readdirSync, existsSync, rmSync, readFileSync } from "fs";
 import { resolve, join } from "path";
 
-const isWatch = process.argv.includes("--watch");
 const ROOT = import.meta.dir.replace("/scripts", "");
 const sitesDir = resolve(ROOT, "src/sites");
 const outDir = resolve(ROOT, "dist");
@@ -28,7 +27,7 @@ if (existsSync(sitesDir)) {
 
 if (entrypoints.length === 0) {
   console.log("No entrypoints found in src/sites");
-  if (!isWatch) process.exit(0);
+  process.exit(0);
 }
 
 // Bun Build API might have limitations with flexible output paths via `naming` option.
@@ -89,18 +88,6 @@ if (existsSync(iconSvg)) {
 
 // Validate manifest paths
 validateManifest();
-
-if (isWatch) {
-  console.log("Watching for changes in src/sites...");
-  // Simple Watch: Monitor changes under src/sites and rebuild
-  // Note: fs.watch recursive option works on Mac(darwin).
-  // Could use Bun's file watching API, but fs.watch is sufficient here.
-  const fs = await import("fs");
-  fs.watch(sitesDir, { recursive: true }, async (event, filename) => {
-    console.log(`Change detected: ${filename}`);
-    await runBuild();
-  });
-}
 
 function validateManifest() {
   console.log("Validating manifest paths...");

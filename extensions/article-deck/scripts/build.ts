@@ -2,7 +2,6 @@ import { existsSync, mkdirSync, cpSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 
-const isWatch = process.argv.includes("--watch");
 const ROOT = import.meta.dir.replace("/scripts", "");
 const DIST = join(ROOT, "dist");
 
@@ -38,8 +37,8 @@ async function build() {
       naming: "[dir]/index.[ext]",
       target: "browser",
       format: "esm",
-      minify: !isWatch,
-      sourcemap: isWatch ? "inline" : "none",
+      minify: true,
+      sourcemap: "none",
     });
 
     if (!result.success) {
@@ -175,19 +174,4 @@ function validateManifest() {
   console.log("✓ All manifest paths validated");
 }
 
-if (isWatch) {
-  console.log("Watch mode enabled. Rebuilding on changes...\n");
-
-  const watcher = Bun.spawn(["bun", "--watch", "run", "scripts/build.ts"], {
-    cwd: ROOT,
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-
-  process.on("SIGINT", () => {
-    watcher.kill();
-    process.exit(0);
-  });
-} else {
-  await build();
-}
+await build();
