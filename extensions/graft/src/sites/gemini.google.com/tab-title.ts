@@ -7,9 +7,9 @@ const DEFAULT_TITLE = "Gemini";
  * @returns Formatted tab title
  */
 export function formatTabTitle(chatTitle?: string | null): string {
-	const trimmed = chatTitle?.trim();
-	if (trimmed) {
-		return `${trimmed} - ${DEFAULT_TITLE}`;
-	}
-	return DEFAULT_TITLE;
+  const trimmed = chatTitle?.trim();
+  if (trimmed) {
+    return `${trimmed} - ${DEFAULT_TITLE}`;
+  }
+  return DEFAULT_TITLE;
 }

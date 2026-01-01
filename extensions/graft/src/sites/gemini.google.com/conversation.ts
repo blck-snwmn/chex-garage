@@ -8,10 +8,10 @@
  * @returns Conversation ID (16 hex chars) or null if not found
  */
 export function extractConversationId(jslog: string | null): string | null {
-	if (!jslog) return null;
+  if (!jslog) return null;
 
-	const match = jslog.match(/c_([a-f0-9]{16})/);
-	return match?.[1] ?? null;
+  const match = jslog.match(/c_([a-f0-9]{16})/);
+  return match?.[1] ?? null;
 }
 
 /**
@@ -21,5 +21,5 @@ export function extractConversationId(jslog: string | null): string | null {
  * @returns Full URL to the conversation
  */
 export function buildConversationUrl(conversationId: string): string {
-	return `https://gemini.google.com/app/${conversationId}`;
+  return `https://gemini.google.com/app/${conversationId}`;
 }
