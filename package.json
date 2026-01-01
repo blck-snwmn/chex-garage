@@ -22,11 +22,14 @@
     "@changesets/cli": "2.29.8",
     "@types/bun": "1.3.5",
     "@typescript-eslint/eslint-plugin": "8.51.0",
+    "chrome-types": "0.1.403",
     "oxfmt": "0.21.0",
     "oxlint": "1.36.0",
     "oxlint-tsgolint": "0.10.0",
+    "sharp": "0.34.5",
     "turbo": "2.7.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "4.0.16"
   },
   "packageManager": "bun@1.3.2"
 }

@@ -9,9 +9,5 @@
     "lint": "oxlint --type-aware --type-check --deny-warnings .",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "chrome-types": "0.1.403",
-    "sharp": "0.34.5"
-  }
+  "devDependencies": {}
 }
