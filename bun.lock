@@ -37,6 +37,9 @@
     "extensions/graft": {
       "name": "@chex/graft",
       "version": "0.1.0",
+      "devDependencies": {
+        "@chex/build-utils": "workspace:*",
+      },
     },
     "extensions/reprise": {
       "name": "@chex/reprise",
@@ -50,6 +53,13 @@
         "@types/react": "19.2.7",
         "@types/react-dom": "19.2.3",
         "tailwindcss": "4.1.18",
+      },
+    },
+    "packages/build-utils": {
+      "name": "@chex/build-utils",
+      "version": "0.0.1",
+      "peerDependencies": {
+        "sharp": "^0.34.0",
       },
     },
     "packages/tsconfig": {
@@ -103,6 +113,8 @@
     "@changesets/write": ["@changesets/write@0.4.0", "", { "dependencies": { "@changesets/types": "^6.1.0", "fs-extra": "^7.0.1", "human-id": "^4.1.1", "prettier": "^2.7.1" } }, "sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q=="],
 
     "@chex/article-deck": ["@chex/article-deck@workspace:extensions/article-deck"],
+
+    "@chex/build-utils": ["@chex/build-utils@workspace:packages/build-utils"],
 
     "@chex/graft": ["@chex/graft@workspace:extensions/graft"],
 

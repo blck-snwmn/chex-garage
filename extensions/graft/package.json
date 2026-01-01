@@ -9,5 +9,7 @@
     "lint": "oxlint --type-aware --type-check --deny-warnings .",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@chex/build-utils": "workspace:*"
+  }
 }
