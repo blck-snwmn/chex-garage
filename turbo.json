@@ -7,7 +7,7 @@
       "outputs": ["dist/**"]
     },
     "lint": {
-      "dependsOn": ["^build"],
+      "dependsOn": [],
       "inputs": ["src/**", "**/*.ts", "**/*.tsx"]
     },
     "test": {
