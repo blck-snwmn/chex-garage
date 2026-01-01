@@ -35,6 +35,7 @@ async function build() {
     const result = await Bun.build({
       entrypoints: [entryPath],
       outdir: join(DIST, outdir),
+      naming: "[dir]/index.[ext]",
       target: "browser",
       format: "esm",
       minify: !isWatch,
