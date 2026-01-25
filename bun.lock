@@ -8,7 +8,7 @@
         "@changesets/cli": "2.29.8",
         "@types/bun": "1.3.6",
         "@typescript-eslint/eslint-plugin": "8.51.0",
-        "chrome-types": "0.1.403",
+        "chrome-types": "0.1.414",
         "oxfmt": "0.21.0",
         "oxlint": "1.36.0",
         "oxlint-tsgolint": "0.10.0",
@@ -548,7 +548,7 @@
 
     "chardet": ["chardet@2.1.1", "", {}, "sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ=="],
 
-    "chrome-types": ["chrome-types@0.1.403", "", {}, "sha512-PXa6GXrdHe2BCiC8mkp79T+CtwJztvWhMKpn5kHZ7nXujE9w+qOcZP5/EnuQaLsOXkuQCWHZdEQZCRg2NSA96A=="],
+    "chrome-types": ["chrome-types@0.1.414", "", {}, "sha512-JHVGPl3bwCduuzfTRhsDxVbIDw8RdYVzv9xMOSc7Hr1DPgvmxAbTrcpO6si1SFDCAPcQDhS2EfCbsqy9ZOCzbA=="],
 
     "ci-info": ["ci-info@3.9.0", "", {}, "sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ=="],
 
