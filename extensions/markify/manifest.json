@@ -3,7 +3,13 @@
   "name": "Markify",
   "version": "1.0.0",
   "description": "Extract page content as Markdown",
-  "permissions": ["activeTab", "scripting", "downloads", "notifications", "storage"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads",
+    "notifications",
+    "storage"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
