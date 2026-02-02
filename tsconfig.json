@@ -5,6 +5,7 @@
     { "path": "extensions/graft" },
     { "path": "extensions/article-deck" },
     { "path": "extensions/reprise" },
+    { "path": "extensions/markify" },
     { "path": "scripts" }
   ]
 }
