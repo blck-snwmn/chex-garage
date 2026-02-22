@@ -33,7 +33,3 @@ export interface ExtractContentResponse {
 
 export type MessageRequest = GenerateSlideRequest | ExtractContentRequest;
 export type MessageResponse = GenerateSlideResponse | ExtractContentResponse;
-
-export interface StorageData {
-  apiKey?: string;
-}

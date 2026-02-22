@@ -8,7 +8,8 @@ Article Deck is a Chrome extension that generates Marp slides from web page cont
 
 - Extract article content from web pages using Readability
 - Convert HTML to Markdown with Turndown
-- Generate presentation slides using Gemini AI
+- Summarize content using Chrome built-in Summarizer API (Gemini Nano)
+- Generate presentation slides using Chrome built-in Prompt API (Gemini Nano)
 - Preview slides with Marp rendering
 
 ## Architecture
@@ -20,12 +21,18 @@ src/
 ├── background.ts      # Background service worker
 ├── content.ts         # Content script for page extraction
 ├── extractor.ts       # Article extraction (Readability + Turndown)
-├── gemini.ts          # Gemini AI integration
+├── nano.ts            # Chrome built-in AI integration (Summarizer + Prompt API)
+├── chrome-ai.d.ts     # Type declarations for Chrome built-in AI APIs
 ├── marp.ts            # Marp slide generation
-├── storage.ts         # Chrome Storage API wrapper
 ├── types.ts           # Shared type definitions
 ├── popup/             # Popup UI
-├── options/           # Options page (API key settings)
 └── preview/           # Slide preview page
 manifest.json          # Chrome extension manifest (V3)
 ```
+
+### AI Processing Pipeline
+
+1. **Summarizer API** - Summarizes article content into key points (markdown format)
+2. **Prompt API** - Converts summarized content into Marp-format presentation slides
+
+Requires Chrome 138+ with compatible hardware (22GB free storage, GPU 4GB+ VRAM or CPU 16GB RAM).

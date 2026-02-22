@@ -1,6 +1,5 @@
-import { generateSlides } from "./gemini.ts";
+import { generateSlides, checkAvailability } from "./nano.ts";
 import { convertToSlide } from "./marp.ts";
-import { getApiKey } from "./storage.ts";
 import type { MessageRequest, GenerateSlideResponse, ExtractedContent } from "./types.ts";
 
 chrome.runtime.onMessage.addListener(
@@ -25,16 +24,19 @@ chrome.runtime.onMessage.addListener(
 );
 
 async function handleGenerateSlide(content: ExtractedContent): Promise<GenerateSlideResponse> {
-  const apiKey = await getApiKey();
-  if (!apiKey) {
+  const availability = await checkAvailability();
+  if (!availability.summarizer || !availability.prompt) {
+    const missing = [];
+    if (!availability.summarizer) missing.push("Summarizer API");
+    if (!availability.prompt) missing.push("Prompt API");
     return {
       success: false,
-      error: "API key not configured. Please set it in the options page.",
+      error: `Chrome built-in AI is not available: ${missing.join(", ")} not supported. Requires Chrome 138+ with compatible hardware.`,
     };
   }
 
   try {
-    const slideMarkdown = await generateSlides(apiKey, content);
+    const slideMarkdown = await generateSlides(content);
     const result = convertToSlide(slideMarkdown);
 
     return {

@@ -43,14 +43,6 @@ function getDiv(id: string): HTMLDivElement {
   return el;
 }
 
-function getAnchor(id: string): HTMLAnchorElement {
-  const el = document.getElementById(id);
-  if (!(el instanceof HTMLAnchorElement)) {
-    throw new Error(`Required anchor #${id} not found`);
-  }
-  return el;
-}
-
 function getSpan(parent: Element, selector: string): HTMLSpanElement {
   const el = parent.querySelector(selector);
   if (!(el instanceof HTMLSpanElement)) {
@@ -63,7 +55,6 @@ const generateBtn = getButton("generateBtn");
 const btnText = getSpan(generateBtn, ".btn-text");
 const btnLoading = getSpan(generateBtn, ".btn-loading");
 const errorSection = getDiv("error");
-const optionsLink = getAnchor("optionsLink");
 
 let pageTitle = "slides";
 
@@ -188,7 +179,3 @@ async function generateSlides() {
 }
 
 generateBtn.addEventListener("click", generateSlides);
-optionsLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  void chrome.runtime.openOptionsPage();
-});

@@ -13,7 +13,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
     "@marp-team/marp-core": "^4.2.0",
     "@mozilla/readability": "^0.6.0",
     "turndown": "^7.2.2",
