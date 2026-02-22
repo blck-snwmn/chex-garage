@@ -67,7 +67,7 @@ ${summary}`;
 
     const text = await session.prompt(prompt);
 
-    // Clean up the response (remove markdown code blocks if present)
+    // Clean up the response (remove markdown code blocks and leading noise)
     let cleaned = text.trim();
     if (cleaned.startsWith("```markdown")) {
       cleaned = cleaned.slice(11);
@@ -76,6 +76,13 @@ ${summary}`;
     }
     if (cleaned.endsWith("```")) {
       cleaned = cleaned.slice(0, -3);
+    }
+    cleaned = cleaned.trim();
+
+    // Strip any text before the frontmatter opening "---"
+    const frontmatterStart = cleaned.indexOf("---");
+    if (frontmatterStart > 0) {
+      cleaned = cleaned.slice(frontmatterStart);
     }
 
     return cleaned.trim();
