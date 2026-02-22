@@ -10,6 +10,7 @@ Convert the following summarized content into Marp format slides.
 - Create appropriate section divisions
 - Use proper headings for each slide
 - Target 5-10 slides depending on content length
+- Write all slide content in Japanese
 
 ## Output Format
 Return ONLY the Marp markdown content, no explanations.
@@ -35,6 +36,7 @@ async function summarizeContent(markdown: string): Promise<string> {
     length: "long",
     sharedContext:
       "This is a web article to be converted into presentation slides. Extract the most important points.",
+    outputLanguage: "ja",
   });
 
   try {
