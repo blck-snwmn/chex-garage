@@ -28,6 +28,10 @@ const pkg = await Bun.file(pkgPath).json();
 const version = pkg.version;
 const tag = `@chex/${extensionName}@${version}`;
 
+// Format to ensure consistency with oxfmt
+console.log("Formatting files...");
+await $`bun run fmt`;
+
 // Stage release files
 console.log(`Staging files for ${extensionName}...`);
 const filesToStage = [
