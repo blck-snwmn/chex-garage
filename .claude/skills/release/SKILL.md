@@ -16,6 +16,18 @@ disable-model-invocation: false
 
    Select packages, bump type (patch/minor/major), and description.
 
+   **Changeset description rules:**
+
+   - Before writing, check commit history since the last tag: `git log $(git describe --tags --match '@chex/<ext>@*' --abbrev=0)..HEAD -- extensions/<ext>/`
+   - Describe user-facing changes from a feature perspective, not per-commit
+   - Use sections to organize:
+     - `### Features` — new functionality
+     - `### Improvements` — enhancements to existing features
+     - `### Bug Fixes` — bug fixes
+     - `### Internal` — refactoring, CI, deps, etc.
+   - Omit empty sections, but do not omit internal changes
+   - Each item should be a concise one-line bullet point
+
 2. **Execute release** (when ready to publish)
 
    ```bash
