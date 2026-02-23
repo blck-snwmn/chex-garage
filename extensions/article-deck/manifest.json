@@ -3,11 +3,7 @@
   "name": "Article Deck",
   "version": "1.1.0",
   "description": "Generate slides from page content",
-  "permissions": [
-    "activeTab",
-    "storage",
-    "scripting"
-  ],
+  "permissions": ["activeTab", "storage", "scripting"],
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": {
