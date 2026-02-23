@@ -59,7 +59,7 @@ if (existingTags.trim()) {
 console.log(`Creating tag ${tag}...`);
 await $`git tag ${tag}`;
 
-console.log(`Pushing tag ${tag}...`);
-await $`git push origin ${tag}`;
+console.log(`Pushing branch and tag ${tag}...`);
+await $`git push origin HEAD ${tag}`;
 
 console.log("Done!");
