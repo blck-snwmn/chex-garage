@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/oxc/oxfmt-config-schema/npm/oxfmt/configuration_schema.json",
+  "ignorePatterns": [".claude"]
+}
