@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <circle cx="64" cy="64" r="60" fill="#1e293b"/>
+
+  <!-- 蒸留器フラスコ -->
+  <path d="M52 30 L52 55 L32 90 Q28 98 36 98 L92 98 Q100 98 96 90 L76 55 L76 30"
+        fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- フラスコ上部の口 -->
+  <line x1="46" y1="30" x2="82" y2="30" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- 液体 -->
+  <path d="M40 82 L88 82 L96 96 Q98 98 92 98 L36 98 Q30 98 32 96 Z"
+        fill="#38bdf8" opacity="0.3"/>
+
+  <!-- 雫 -->
+  <circle cx="64" cy="70" r="4" fill="#38bdf8"/>
+</svg>

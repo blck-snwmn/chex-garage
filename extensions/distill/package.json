@@ -1,0 +1,22 @@
+{
+  "name": "@chex/distill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "dev": "bun --watch run scripts/build.ts",
+    "lint": "oxlint --type-aware --type-check --deny-warnings .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2"
+  },
+  "devDependencies": {
+    "@chex/build-utils": "workspace:*",
+    "@types/turndown": "5.0.6"
+  }
+}

@@ -1,0 +1,33 @@
+/** 会話データ */
+export interface ConversationData {
+  source: "chatgpt" | "grok";
+  conversationId: string;
+  url: string;
+  title: string;
+  model: string;
+  messages: ConversationMessage[];
+}
+
+export interface ConversationMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+/** Content Script → Background メッセージ */
+export type ContentToBackground =
+  | { type: "AUTO_SAVE"; data: ConversationData }
+  | { type: "SAVE_CONVERSATION"; data: ConversationData };
+
+/** Background → Content Script メッセージ */
+export type BackgroundToContent = { type: "EXTRACT_AND_SAVE" };
+
+/** サーバーAPI型 */
+export interface SaveRequest {
+  data: ConversationData;
+}
+
+export interface SaveResponse {
+  success: boolean;
+  filePath?: string;
+  error?: string;
+}

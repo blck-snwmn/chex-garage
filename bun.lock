@@ -19,7 +19,7 @@
     },
     "extensions/article-deck": {
       "name": "@chex/article-deck",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "dependencies": {
         "@marp-team/marp-core": "^4.2.0",
         "@mozilla/readability": "^0.6.0",
@@ -31,6 +31,18 @@
         "@types/jsdom": "27.0.0",
         "@types/turndown": "5.0.6",
         "jsdom": "27.4.0",
+      },
+    },
+    "extensions/distill": {
+      "name": "@chex/distill",
+      "version": "0.1.0",
+      "dependencies": {
+        "turndown": "^7.2.0",
+        "turndown-plugin-gfm": "^1.0.2",
+      },
+      "devDependencies": {
+        "@chex/build-utils": "workspace:*",
+        "@types/turndown": "5.0.6",
       },
     },
     "extensions/graft": {
@@ -80,6 +92,10 @@
       "peerDependencies": {
         "sharp": "^0.34.0",
       },
+    },
+    "packages/distill-server": {
+      "name": "@chex/distill-server",
+      "version": "0.1.0",
     },
   },
   "packages": {
@@ -132,6 +148,10 @@
     "@chex/article-deck": ["@chex/article-deck@workspace:extensions/article-deck"],
 
     "@chex/build-utils": ["@chex/build-utils@workspace:packages/build-utils"],
+
+    "@chex/distill": ["@chex/distill@workspace:extensions/distill"],
+
+    "@chex/distill-server": ["@chex/distill-server@workspace:packages/distill-server"],
 
     "@chex/graft": ["@chex/graft@workspace:extensions/graft"],
 

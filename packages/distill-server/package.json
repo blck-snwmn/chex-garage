@@ -1,0 +1,16 @@
+{
+  "name": "@chex/distill-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "test": "vitest run",
+    "lint": "oxlint --type-aware --type-check --deny-warnings .",
+    "typecheck": "tsc --noEmit"
+  }
+}
