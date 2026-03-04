@@ -178,6 +178,13 @@ function init(): void {
     }
   }, POLL_INTERVAL_MS);
 
+  // タブがアクティブになったときに保存
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      trySave("AUTO_SAVE");
+    }
+  });
+
   // Background scriptからの手動保存要求に応答
   chrome.runtime.onMessage.addListener(
     (
@@ -191,6 +198,9 @@ function init(): void {
       return undefined;
     },
   );
+
+  // ページ読み込み時に初回保存をトリガー
+  debouncedAutoSave();
 
   console.log("Distill: content script loaded for chatgpt.com");
 }
