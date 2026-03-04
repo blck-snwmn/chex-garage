@@ -8,7 +8,6 @@ export interface ConversationData {
   conversationId: string;
   url: string;
   title: string;
-  model: string;
   messages: ConversationMessage[];
 }
 

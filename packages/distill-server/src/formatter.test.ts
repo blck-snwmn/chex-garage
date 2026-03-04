@@ -8,7 +8,6 @@ function makeData(overrides?: Partial<ConversationData>): ConversationData {
     conversationId: "abc-123",
     url: "https://chatgpt.com/c/abc-123",
     title: "Test Conversation",
-    model: "gpt-4o",
     messages: [
       { role: "user", content: "Hello" },
       { role: "assistant", content: "Hi there!" },
@@ -22,7 +21,6 @@ describe("formatConversation", () => {
     const result = formatConversation(makeData(), "2026-03-02");
     expect(result).toContain("---\nsource: chatgpt\n");
     expect(result).toContain("url: https://chatgpt.com/c/abc-123\n");
-    expect(result).toContain("model: gpt-4o\n");
     expect(result).toContain("date: 2026-03-02\n");
     expect(result).toContain('title: "Test Conversation"\n');
     expect(result).toContain("---");

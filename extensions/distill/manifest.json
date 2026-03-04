@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "description": "Save AI conversations to Obsidian vault as Markdown",
   "permissions": ["storage", "scripting"],
-  "host_permissions": ["https://chatgpt.com/*"],
+  "host_permissions": ["https://chatgpt.com/*", "https://grok.com/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -13,6 +13,11 @@
     {
       "matches": ["https://chatgpt.com/*"],
       "js": ["sites/chatgpt.com/index.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://grok.com/*"],
+      "js": ["sites/grok.com/index.js"],
       "run_at": "document_idle"
     }
   ],

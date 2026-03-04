@@ -18,51 +18,19 @@ const turndown = new TurndownService({
 });
 turndown.use(gfm);
 
-// ChatGPT コードブロック: <pre> 内の CodeMirror (cm-editor) からコード本文と言語を抽出
-turndown.addRule("chatgpt-codeblock", {
+// 除外要素: thinking-container, inline-media-container, auth-notification
+turndown.addRule("grok-exclude", {
   filter(node) {
-    return node.nodeName === "PRE" && node.querySelector(".cm-content") !== null;
-  },
-  replacement(_content, node) {
-    const el = node as HTMLElement;
-    const cmContent = el.querySelector(".cm-content");
-    if (!cmContent) return _content;
-    // textContent は <br> を無視するため、先に <br> を "\n" テキストノードに置換してから取得
-    const clone = cmContent.cloneNode(true) as HTMLElement;
-    for (const br of clone.querySelectorAll("br")) {
-      br.replaceWith("\n");
-    }
-    const code = clone.textContent ?? "";
-    // 言語名はヘッダー div.sticky の textContent から取得
-    const langHeader = el.querySelector("div.sticky");
-    const lang = langHeader?.textContent?.trim().toLowerCase() ?? "";
-    return `\n\n\`\`\`${lang}\n${code.replace(/\n$/, "")}\n\`\`\`\n\n`;
-  },
-});
-
-// KaTeX インライン数式: <span class="katex"> → $...$
-turndown.addRule("katex-inline", {
-  filter(node) {
+    if (!(node instanceof HTMLElement)) return false;
     return (
-      node.nodeName === "SPAN" &&
-      node.classList.contains("katex") &&
-      !node.parentElement?.classList.contains("katex-display")
+      node.classList.contains("thinking-container") ||
+      (node.nodeName === "SECTION" &&
+        (node.classList.contains("inline-media-container") ||
+          node.classList.contains("auth-notification")))
     );
   },
-  replacement(_content, node) {
-    const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
-    return tex?.textContent ? `$${tex.textContent}$` : "";
-  },
-});
-
-// KaTeX ブロック数式: <span class="katex-display"> → $$...$$
-turndown.addRule("katex-display", {
-  filter(node) {
-    return node.nodeName === "SPAN" && node.classList.contains("katex-display");
-  },
-  replacement(_content, node) {
-    const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
-    return tex?.textContent ? `\n\n$$\n${tex.textContent}\n$$\n\n` : "";
+  replacement() {
+    return "";
   },
 });
 
@@ -73,8 +41,8 @@ let lastPathname = location.pathname;
 /** ページからタイトルを取得する */
 function extractTitle(): string {
   const raw = document.title;
-  // "Title - ChatGPT" 形式をパース
-  const match = raw.match(/^(.+?)\s*[-–—]\s*ChatGPT$/);
+  // "Title - Grok" 形式をパース
+  const match = raw.match(/^(.+?)\s*[-–—]\s*Grok$/);
   return match?.[1]?.trim() ?? raw.trim();
 }
 
@@ -86,20 +54,29 @@ function extractConversationId(): string | null {
 
 /** 全メッセージをDOMから抽出する */
 function extractMessages(): ConversationMessage[] {
-  const elements = document.querySelectorAll("[data-message-author-role]");
+  const containers = document.querySelectorAll<HTMLElement>(
+    ".relative.group.flex.flex-col.justify-center",
+  );
   const messages: ConversationMessage[] = [];
 
-  for (const el of elements) {
-    const authorRole = el.getAttribute("data-message-author-role");
-    if (authorRole !== "user" && authorRole !== "assistant") continue;
+  for (const container of containers) {
+    const classList = container.className;
+    let role: "user" | "assistant";
+    if (classList.includes("items-end")) {
+      role = "user";
+    } else if (classList.includes("items-start")) {
+      role = "assistant";
+    } else {
+      continue;
+    }
 
-    const contentEl = el.querySelector(".markdown, .whitespace-pre-wrap");
-    if (!contentEl) continue;
+    const bubble = container.querySelector<HTMLElement>(".message-bubble");
+    if (!bubble) continue;
 
-    const content = turndown.turndown(contentEl.innerHTML).trim();
+    const content = turndown.turndown(bubble.innerHTML).trim();
     if (!content) continue;
 
-    messages.push({ role: authorRole, content });
+    messages.push({ role, content });
   }
 
   return messages;
@@ -114,7 +91,7 @@ function extractConversation(): ConversationData | null {
   if (messages.length === 0) return null;
 
   return {
-    source: "chatgpt",
+    source: "grok",
     conversationId,
     url: location.href,
     title: extractTitle(),
@@ -124,10 +101,10 @@ function extractConversation(): ConversationData | null {
 
 /** メッセージ数+末尾メッセージ長のfingerprintで重複排除する */
 function computeFingerprint(): string {
-  const elements = document.querySelectorAll("[data-message-author-role]");
-  const last = elements[elements.length - 1];
+  const containers = document.querySelectorAll(".relative.group.flex.flex-col.justify-center");
+  const last = containers[containers.length - 1];
   const lastLength = last?.textContent?.length ?? 0;
-  return `${String(elements.length)}:${String(lastLength)}`;
+  return `${String(containers.length)}:${String(lastLength)}`;
 }
 
 function sendToBackground(type: ContentToBackground["type"], data: ConversationData): void {
@@ -195,7 +172,7 @@ function init(): void {
   // ページ読み込み時に初回保存をトリガー
   debouncedAutoSave();
 
-  console.log("Distill: content script loaded for chatgpt.com");
+  console.log("Distill: content script loaded for grok.com");
 }
 
 if (document.readyState === "loading") {

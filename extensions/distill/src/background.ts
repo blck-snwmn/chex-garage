@@ -25,13 +25,18 @@ chrome.runtime.onMessage.addListener(
 );
 
 chrome.action.onClicked.addListener((tab) => {
-  if (!tab.id) return;
+  if (!tab.id || !tab.url) return;
   const tabId = tab.id;
   const message: BackgroundToContent = { type: "EXTRACT_AND_SAVE" };
+
+  const scriptFile = tab.url.includes("grok.com")
+    ? "sites/grok.com/index.js"
+    : "sites/chatgpt.com/index.js";
+
   chrome.tabs.sendMessage(tabId, message).catch(() => {
     console.warn("Distill: content script not ready, injecting and retrying...");
     chrome.scripting
-      .executeScript({ target: { tabId }, files: ["sites/chatgpt.com/index.js"] })
+      .executeScript({ target: { tabId }, files: [scriptFile] })
       .then(() => chrome.tabs.sendMessage(tabId, message))
       .catch((err) => console.error("Distill: failed to inject content script:", err));
   });

@@ -6,7 +6,6 @@ export function formatConversation(data: ConversationData, date: string): string
     "---",
     `source: ${data.source}`,
     `url: ${data.url}`,
-    `model: ${data.model}`,
     `date: ${date}`,
     `title: "${escapeFrontmatterValue(data.title)}"`,
     "---",

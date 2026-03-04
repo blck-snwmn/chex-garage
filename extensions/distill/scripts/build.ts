@@ -11,6 +11,11 @@ await buildExtension({
         outdir: "sites/chatgpt.com",
         outfile: "index.js",
       },
+      {
+        entry: "src/sites/grok.com/index.ts",
+        outdir: "sites/grok.com",
+        outfile: "index.js",
+      },
     ],
   },
 });
