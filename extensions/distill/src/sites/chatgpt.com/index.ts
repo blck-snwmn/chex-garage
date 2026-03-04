@@ -129,10 +129,12 @@ function extractConversation(): ConversationData | null {
   };
 }
 
-/** メッセージ数ベースのfingerprintで重複排除する */
+/** メッセージ数+末尾メッセージ長のfingerprintで重複排除する */
 function computeFingerprint(): string {
   const elements = document.querySelectorAll("[data-message-author-role]");
-  return String(elements.length);
+  const last = elements[elements.length - 1];
+  const lastLength = last?.textContent?.length ?? 0;
+  return `${String(elements.length)}:${String(lastLength)}`;
 }
 
 function sendToBackground(type: ContentToBackground["type"], data: ConversationData): void {
