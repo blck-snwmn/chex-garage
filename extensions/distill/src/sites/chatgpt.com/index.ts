@@ -1,91 +1,19 @@
-import TurndownService from "turndown";
-import { gfm } from "turndown-plugin-gfm";
-import type {
-  BackgroundToContent,
-  ContentToBackground,
-  ConversationData,
-  ConversationMessage,
-} from "../../types.ts";
+import type TurndownService from "turndown";
+import type { ConversationData, ConversationMessage } from "../../types.ts";
+import { createContentScript } from "../content-script-core.ts";
 
-const DEBOUNCE_MS = 3000;
-const POLL_INTERVAL_MS = 2000;
-
-const turndown = new TurndownService({
-  headingStyle: "atx",
-  codeBlockStyle: "fenced",
-  bulletListMarker: "-",
-  hr: "---",
-});
-turndown.use(gfm);
-
-// ChatGPT コードブロック: <pre> 内の CodeMirror (cm-editor) からコード本文と言語を抽出
-turndown.addRule("chatgpt-codeblock", {
-  filter(node) {
-    return node.nodeName === "PRE" && node.querySelector(".cm-content") !== null;
-  },
-  replacement(_content, node) {
-    const el = node as HTMLElement;
-    const cmContent = el.querySelector(".cm-content");
-    if (!cmContent) return _content;
-    // textContent は <br> を無視するため、先に <br> を "\n" テキストノードに置換してから取得
-    const clone = cmContent.cloneNode(true) as HTMLElement;
-    for (const br of clone.querySelectorAll("br")) {
-      br.replaceWith("\n");
-    }
-    const code = clone.textContent ?? "";
-    // 言語名はヘッダー div.sticky の textContent から取得
-    const langHeader = el.querySelector("div.sticky");
-    const lang = langHeader?.textContent?.trim().toLowerCase() ?? "";
-    return `\n\n\`\`\`${lang}\n${code.replace(/\n$/, "")}\n\`\`\`\n\n`;
-  },
-});
-
-// KaTeX インライン数式: <span class="katex"> → $...$
-turndown.addRule("katex-inline", {
-  filter(node) {
-    return (
-      node.nodeName === "SPAN" &&
-      node.classList.contains("katex") &&
-      !node.parentElement?.classList.contains("katex-display")
-    );
-  },
-  replacement(_content, node) {
-    const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
-    return tex?.textContent ? `$${tex.textContent}$` : "";
-  },
-});
-
-// KaTeX ブロック数式: <span class="katex-display"> → $$...$$
-turndown.addRule("katex-display", {
-  filter(node) {
-    return node.nodeName === "SPAN" && node.classList.contains("katex-display");
-  },
-  replacement(_content, node) {
-    const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
-    return tex?.textContent ? `\n\n$$\n${tex.textContent}\n$$\n\n` : "";
-  },
-});
-
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-let lastFingerprint = "";
-let lastPathname = location.pathname;
-
-/** ページからタイトルを取得する */
 function extractTitle(): string {
   const raw = document.title;
-  // "Title - ChatGPT" 形式をパース
   const match = raw.match(/^(.+?)\s*[-–—]\s*ChatGPT$/);
   return match?.[1]?.trim() ?? raw.trim();
 }
 
-/** URLからconversation IDを取得する */
 function extractConversationId(): string | null {
   const match = location.pathname.match(/^\/c\/([a-zA-Z0-9-]+)/);
   return match?.[1] ?? null;
 }
 
-/** 全メッセージをDOMから抽出する */
-function extractMessages(): ConversationMessage[] {
+function extractMessages(turndown: TurndownService): ConversationMessage[] {
   const elements = document.querySelectorAll("[data-message-author-role]");
   const messages: ConversationMessage[] = [];
 
@@ -105,101 +33,74 @@ function extractMessages(): ConversationMessage[] {
   return messages;
 }
 
-/** 会話データ全体を抽出する */
-function extractConversation(): ConversationData | null {
-  const conversationId = extractConversationId();
-  if (!conversationId) return null;
+createContentScript({
+  siteName: "chatgpt.com",
+  configureTurndown(td) {
+    // ChatGPT コードブロック: <pre> 内の CodeMirror (cm-editor) からコード本文と言語を抽出
+    td.addRule("chatgpt-codeblock", {
+      filter(node) {
+        return node.nodeName === "PRE" && node.querySelector(".cm-content") !== null;
+      },
+      replacement(_content, node) {
+        const el = node as HTMLElement;
+        const cmContent = el.querySelector(".cm-content");
+        if (!cmContent) return _content;
+        const clone = cmContent.cloneNode(true) as HTMLElement;
+        for (const br of clone.querySelectorAll("br")) {
+          br.replaceWith("\n");
+        }
+        const code = clone.textContent ?? "";
+        const langHeader = el.querySelector("div.sticky");
+        const lang = langHeader?.textContent?.trim().toLowerCase() ?? "";
+        return `\n\n\`\`\`${lang}\n${code.replace(/\n$/, "")}\n\`\`\`\n\n`;
+      },
+    });
 
-  const messages = extractMessages();
-  if (messages.length === 0) return null;
+    // KaTeX インライン数式: <span class="katex"> → $...$
+    td.addRule("katex-inline", {
+      filter(node) {
+        return (
+          node.nodeName === "SPAN" &&
+          node.classList.contains("katex") &&
+          !node.parentElement?.classList.contains("katex-display")
+        );
+      },
+      replacement(_content, node) {
+        const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
+        return tex?.textContent ? `$${tex.textContent}$` : "";
+      },
+    });
 
-  return {
-    source: "chatgpt",
-    conversationId,
-    url: location.href,
-    title: extractTitle(),
-    messages,
-  };
-}
+    // KaTeX ブロック数式: <span class="katex-display"> → $$...$$
+    td.addRule("katex-display", {
+      filter(node) {
+        return node.nodeName === "SPAN" && node.classList.contains("katex-display");
+      },
+      replacement(_content, node) {
+        const tex = (node as HTMLElement).querySelector('annotation[encoding="application/x-tex"]');
+        return tex?.textContent ? `\n\n$$\n${tex.textContent}\n$$\n\n` : "";
+      },
+    });
+  },
+  extractConversation(turndown): ConversationData | null {
+    const conversationId = extractConversationId();
+    if (!conversationId) return null;
 
-/** メッセージ数+末尾メッセージ長のfingerprintで重複排除する */
-function computeFingerprint(): string {
-  const elements = document.querySelectorAll("[data-message-author-role]");
-  const last = elements[elements.length - 1];
-  const lastLength = last?.textContent?.length ?? 0;
-  return `${String(elements.length)}:${String(lastLength)}`;
-}
+    const messages = extractMessages(turndown);
+    if (messages.length === 0) return null;
 
-function sendToBackground(type: ContentToBackground["type"], data: ConversationData): void {
-  const message: ContentToBackground = { type, data };
-  chrome.runtime.sendMessage(message).catch(() => {
-    // Background service worker が非アクティブの場合は無視
-  });
-}
-
-function trySave(type: ContentToBackground["type"]): void {
-  const data = extractConversation();
-  if (!data) return;
-  sendToBackground(type, data);
-}
-
-function debouncedAutoSave(): void {
-  const fingerprint = computeFingerprint();
-  if (fingerprint === lastFingerprint) return;
-  lastFingerprint = fingerprint;
-
-  if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    trySave("AUTO_SAVE");
-  }, DEBOUNCE_MS);
-}
-
-/** MutationObserver + pathname監視でauto-saveを実行する */
-function init(): void {
-  // MutationObserverでDOM変更を監視
-  const observer = new MutationObserver(() => {
-    debouncedAutoSave();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  // SPA対応: pathname変更を検知
-  setInterval(() => {
-    if (location.pathname !== lastPathname) {
-      lastPathname = location.pathname;
-      lastFingerprint = "";
-      debouncedAutoSave();
-    }
-  }, POLL_INTERVAL_MS);
-
-  // タブがアクティブになったときに保存（変更がある場合のみ）
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      debouncedAutoSave();
-    }
-  });
-
-  // Background scriptからの手動保存要求に応答
-  chrome.runtime.onMessage.addListener(
-    (
-      message: BackgroundToContent,
-      _sender: chrome.runtime.MessageSender,
-      _sendResponse: (response?: unknown) => void,
-    ) => {
-      if (message.type === "EXTRACT_AND_SAVE") {
-        trySave("SAVE_CONVERSATION");
-      }
-      return undefined;
-    },
-  );
-
-  // ページ読み込み時に初回保存をトリガー
-  debouncedAutoSave();
-
-  console.log("Distill: content script loaded for chatgpt.com");
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
-}
+    return {
+      source: "chatgpt",
+      conversationId,
+      url: location.href,
+      title: extractTitle(),
+      messages,
+    };
+  },
+  computeFingerprint(): string {
+    const elements = document.querySelectorAll("[data-message-author-role]");
+    const last = elements[elements.length - 1];
+    const lastLength = last?.textContent?.length ?? 0;
+    return `${String(elements.length)}:${String(lastLength)}`;
+  },
+});

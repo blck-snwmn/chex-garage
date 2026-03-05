@@ -12,11 +12,6 @@ export interface ConversationMessage {
   content: string;
 }
 
-/** Content Script → Background メッセージ */
-export type ContentToBackground =
-  | { type: "AUTO_SAVE"; data: ConversationData }
-  | { type: "SAVE_CONVERSATION"; data: ConversationData };
-
 /** Background → Content Script メッセージ */
 export type BackgroundToContent = { type: "EXTRACT_AND_SAVE" };
 
