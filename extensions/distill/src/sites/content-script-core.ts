@@ -2,9 +2,8 @@ import TurndownService from "turndown";
 import { gfm } from "turndown-plugin-gfm";
 import type { BackgroundToContent, ConversationData } from "../types.ts";
 
-const DEBOUNCE_MS = 3000;
 const POLL_INTERVAL_MS = 2000;
-const THROTTLE_MS = 500;
+const THROTTLE_MS = 5000;
 
 export interface SiteAdapter {
   siteName: string;
@@ -23,7 +22,6 @@ export function createContentScript(adapter: SiteAdapter): void {
   turndown.use(gfm);
   adapter.configureTurndown(turndown);
 
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let lastFingerprint = "";
   let lastPathname = location.pathname;
   let lastThrottleTime = 0;
@@ -40,24 +38,21 @@ export function createContentScript(adapter: SiteAdapter): void {
     sendToBackground(data);
   }
 
-  function debouncedAutoSave(): void {
+  function throttledAutoSave(): void {
     const now = Date.now();
     if (now - lastThrottleTime < THROTTLE_MS) return;
-    lastThrottleTime = now;
 
     const fingerprint = adapter.computeFingerprint();
     if (fingerprint === lastFingerprint) return;
+    lastThrottleTime = now;
     lastFingerprint = fingerprint;
 
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      trySave();
-    }, DEBOUNCE_MS);
+    trySave();
   }
 
   function init(): void {
     const observer = new MutationObserver(() => {
-      debouncedAutoSave();
+      throttledAutoSave();
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
@@ -65,13 +60,13 @@ export function createContentScript(adapter: SiteAdapter): void {
       if (location.pathname !== lastPathname) {
         lastPathname = location.pathname;
         lastFingerprint = "";
-        debouncedAutoSave();
+        throttledAutoSave();
       }
     }, POLL_INTERVAL_MS);
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
-        debouncedAutoSave();
+        throttledAutoSave();
       }
     });
 
@@ -88,7 +83,7 @@ export function createContentScript(adapter: SiteAdapter): void {
       },
     );
 
-    debouncedAutoSave();
+    throttledAutoSave();
     console.log(`Distill: content script loaded for ${adapter.siteName}`);
   }
 

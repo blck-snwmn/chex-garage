@@ -1,6 +1,7 @@
 import type TurndownService from "turndown";
 import type { ConversationData, ConversationMessage } from "../../types.ts";
 import { createContentScript } from "../content-script-core.ts";
+import { fingerprintElements } from "../hash.ts";
 
 function extractTitle(): string {
   const raw = document.title;
@@ -98,9 +99,6 @@ createContentScript({
     };
   },
   computeFingerprint(): string {
-    const elements = document.querySelectorAll("[data-message-author-role]");
-    const last = elements[elements.length - 1];
-    const lastLength = last?.textContent?.length ?? 0;
-    return `${String(elements.length)}:${String(lastLength)}`;
+    return fingerprintElements("[data-message-author-role]");
   },
 });

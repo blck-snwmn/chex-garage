@@ -1,6 +1,7 @@
 import type TurndownService from "turndown";
 import type { ConversationData, ConversationMessage } from "../../types.ts";
 import { createContentScript } from "../content-script-core.ts";
+import { fingerprintElements } from "../hash.ts";
 
 function extractTitle(): string {
   const raw = document.title;
@@ -77,9 +78,6 @@ createContentScript({
     };
   },
   computeFingerprint(): string {
-    const containers = document.querySelectorAll(".relative.group.flex.flex-col.justify-center");
-    const last = containers[containers.length - 1];
-    const lastLength = last?.textContent?.length ?? 0;
-    return `${String(containers.length)}:${String(lastLength)}`;
+    return fingerprintElements(".message-bubble");
   },
 });
