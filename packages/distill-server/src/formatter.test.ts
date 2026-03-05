@@ -21,7 +21,7 @@ describe("formatConversation", () => {
     const result = formatConversation(makeData(), "2026-03-02");
     expect(result).toContain("---\nsource: chatgpt\n");
     expect(result).toContain("url: https://chatgpt.com/c/abc-123\n");
-    expect(result).toContain("date: 2026-03-02\n");
+    expect(result).toContain("saved_at: 2026-03-02\n");
     expect(result).toContain('title: "Test Conversation"\n');
     expect(result).toContain("---");
   });

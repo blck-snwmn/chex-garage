@@ -6,7 +6,7 @@ export function formatConversation(data: ConversationData, date: string): string
     "---",
     `source: ${data.source}`,
     `url: ${data.url}`,
-    `date: ${date}`,
+    `saved_at: ${date}`,
     `title: "${escapeFrontmatterValue(data.title)}"`,
     "---",
   ].join("\n");
