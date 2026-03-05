@@ -10,8 +10,10 @@ if (!vaultPath) {
 
 const port = Number(process.env.SHELF_PORT) || 18234;
 
-function today(): string {
-  return new Date().toISOString().slice(0, 10);
+function now(): string {
+  return (
+    new Date().toLocaleString("sv-SE", { timeZone: "Asia/Tokyo" }).replace(" ", "T") + "+09:00"
+  );
 }
 
 const corsHeaders: Record<string, string> = {
@@ -54,7 +56,7 @@ const server = Bun.serve({
         );
       }
 
-      const markdown = formatConversation(data, today());
+      const markdown = formatConversation(data, now());
       const filePath = writeConversation(vaultPath, data.source, data.conversationId, markdown);
 
       return jsonResponse({ success: true, filePath } satisfies SaveResponse);
