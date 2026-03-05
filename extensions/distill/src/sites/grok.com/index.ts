@@ -148,10 +148,10 @@ function init(): void {
     }
   }, POLL_INTERVAL_MS);
 
-  // タブがアクティブになったときに保存
+  // タブがアクティブになったときに保存（変更がある場合のみ）
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-      trySave("AUTO_SAVE");
+      debouncedAutoSave();
     }
   });
 
