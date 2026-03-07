@@ -41,10 +41,10 @@ export function createContentScript(adapter: SiteAdapter): void {
   function throttledAutoSave(): void {
     const now = Date.now();
     if (now - lastThrottleTime < THROTTLE_MS) return;
+    lastThrottleTime = now;
 
     const fingerprint = adapter.computeFingerprint();
     if (fingerprint === lastFingerprint) return;
-    lastThrottleTime = now;
     lastFingerprint = fingerprint;
 
     trySave();

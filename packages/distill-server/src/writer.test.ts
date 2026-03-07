@@ -1,9 +1,9 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
-import { resolveFilePath, writeConversation } from "./writer.ts";
+import { resolveFilePath, stripSavedAt, writeConversation } from "./writer.ts";
 
 describe("resolveFilePath", () => {
   it("正しいファイルパスを生成する", () => {
@@ -41,5 +41,41 @@ describe("writeConversation", () => {
     writeConversation(tmp, "chatgpt", "conv-3", "second");
     const filePath = resolveFilePath(tmp, "chatgpt", "conv-3");
     expect(readFileSync(filePath, "utf-8")).toBe("second");
+  });
+
+  it("saved_at のみ異なる場合は上書きしない", () => {
+    const tmp = createTmpDir();
+    const md1 = "---\nsaved_at: 2026-03-06 10:00:00\n---\n# Hello";
+    const md2 = "---\nsaved_at: 2026-03-06 12:00:00\n---\n# Hello";
+    const filePath = writeConversation(tmp, "chatgpt", "conv-4", md1);
+    const mtimeBefore = statSync(filePath).mtimeMs;
+
+    writeConversation(tmp, "chatgpt", "conv-4", md2);
+    const mtimeAfter = statSync(filePath).mtimeMs;
+
+    expect(readFileSync(filePath, "utf-8")).toBe(md1);
+    expect(mtimeAfter).toBe(mtimeBefore);
+  });
+
+  it("内容が異なる場合は上書きする", () => {
+    const tmp = createTmpDir();
+    const md1 = "---\nsaved_at: 2026-03-06 10:00:00\n---\n# Hello";
+    const md2 = "---\nsaved_at: 2026-03-06 12:00:00\n---\n# Hello\n\nNew message";
+    writeConversation(tmp, "chatgpt", "conv-5", md1);
+    writeConversation(tmp, "chatgpt", "conv-5", md2);
+    const filePath = resolveFilePath(tmp, "chatgpt", "conv-5");
+    expect(readFileSync(filePath, "utf-8")).toBe(md2);
+  });
+});
+
+describe("stripSavedAt", () => {
+  it("saved_at 行を除去する", () => {
+    const md = "---\nsaved_at: 2026-03-06 10:00:00\ntitle: Test\n---";
+    expect(stripSavedAt(md)).toBe("---\n\ntitle: Test\n---");
+  });
+
+  it("saved_at がない場合はそのまま返す", () => {
+    const md = "---\ntitle: Test\n---";
+    expect(stripSavedAt(md)).toBe(md);
   });
 });
