@@ -61,3 +61,10 @@ git tag -l "@chex/*"
 - Tag format: `@chex/<extension>@<version>` (e.g., `@chex/graft@0.2.0`)
 - Release script handles commit and tag creation automatically
 - Run `bun run test && bun run build` before releasing
+
+## Changeset scope
+
+- **changeset に含めるのは `extensions/` 配下のパッケージのみ**
+- `packages/` 配下（`build-utils`, `distill-server`）は `private: true` でリリース対象外
+- リリーススクリプトは `extensions/{name}/` のファイルしかステージ・コミットしないため、private パッケージを含めると version bump や CHANGELOG.md が未コミットのまま残る
+- `.changeset/config.json` で `privatePackages.version: false` に設定済み
