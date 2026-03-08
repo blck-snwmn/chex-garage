@@ -1,5 +1,22 @@
 # @chex/distill
 
+## 0.3.0
+
+### Minor Changes
+
+- ### Features
+  - Add Grok conversation saving support
+  - Auto-save on page load and tab activation
+
+  ### Improvements
+  - Skip redundant writes via server-side content comparison (saved_at only differs → no overwrite)
+  - Capture streamed responses during auto-save
+  - Record precise JST datetime on save
+
+  ### Internal
+  - Simplify content script architecture (unified SiteAdapter pattern)
+  - Remove unused fnv1a export, use fingerprintElements directly
+
 ## 0.2.0
 
 ### Minor Changes
