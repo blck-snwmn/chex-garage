@@ -4,10 +4,10 @@ A local HTTP server that saves AI conversations to an Obsidian vault as Markdown
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|---|---|---|
-| `SHELF_VAULT_PATH` | Yes | Path to the Obsidian vault |
-| `SHELF_PORT` | No | Port number (default: 18234) |
+| Variable           | Required | Description                  |
+| ------------------ | -------- | ---------------------------- |
+| `SHELF_VAULT_PATH` | Yes      | Path to the Obsidian vault   |
+| `SHELF_PORT`       | No       | Port number (default: 18234) |
 
 ## Manual Start
 
