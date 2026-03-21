@@ -1,6 +1,6 @@
 /** 会話データ */
 export interface ConversationData {
-  source: "chatgpt" | "grok";
+  source: "chatgpt" | "grok" | "claude";
   conversationId: string;
   url: string;
   title: string;

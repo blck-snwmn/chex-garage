@@ -16,6 +16,11 @@ await buildExtension({
         outdir: "sites/grok.com",
         outfile: "index.js",
       },
+      {
+        entry: "src/sites/claude.ai/index.ts",
+        outdir: "sites/claude.ai",
+        outfile: "index.js",
+      },
     ],
   },
 });

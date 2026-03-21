@@ -4,7 +4,7 @@
   "version": "0.3.0",
   "description": "Save AI conversations to Obsidian vault as Markdown",
   "permissions": ["storage", "scripting"],
-  "host_permissions": ["https://chatgpt.com/*", "https://grok.com/*"],
+  "host_permissions": ["https://chatgpt.com/*", "https://grok.com/*", "https://claude.ai/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -18,6 +18,11 @@
     {
       "matches": ["https://grok.com/*"],
       "js": ["sites/grok.com/index.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["sites/claude.ai/index.js"],
       "run_at": "document_idle"
     }
   ],
