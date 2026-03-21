@@ -1,5 +1,12 @@
 # @chex/distill
 
+## 0.4.0
+
+### Minor Changes
+
+- ### Features
+  - Add claude.ai conversation saving support
+
 ## 0.3.0
 
 ### Minor Changes
