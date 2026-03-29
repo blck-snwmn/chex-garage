@@ -1,6 +1,11 @@
-import { readFileSync, statSync } from "node:fs";
-import { mkdtempSync } from "node:fs";
-import { join } from "node:path";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  statSync,
+  writeFileSync as fsWriteFileSync,
+} from "node:fs";
+import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 import { resolveFilePath, stripSavedAt, writeConversation } from "./writer.ts";
@@ -65,6 +70,40 @@ describe("writeConversation", () => {
     writeConversation(tmp, "chatgpt", "conv-5", md2);
     const filePath = resolveFilePath(tmp, "chatgpt", "conv-5");
     expect(readFileSync(filePath, "utf-8")).toBe(md2);
+  });
+
+  it("既存ファイルの未知フロントマターフィールドを保持する", () => {
+    const tmp = createTmpDir();
+    const existing =
+      '---\nsource: chatgpt\nurl: https://example.com\nsaved_at: 2026-03-06T10:00:00+09:00\ntitle: "Hello"\ntags: [ai, test]\nrating: 5\n---\n\n# Hello\n\n**User:**\n\nHi\n';
+    const filePath = resolveFilePath(tmp, "chatgpt", "conv-extra");
+    mkdirSync(dirname(filePath), { recursive: true });
+    fsWriteFileSync(filePath, existing, "utf-8");
+
+    const newMarkdown =
+      '---\nsource: chatgpt\nurl: https://example.com\nsaved_at: 2026-03-06T12:00:00+09:00\ntitle: "Hello"\n---\n\n# Hello\n\n**User:**\n\nHi\n\n---\n\n**Assistant:**\n\nHello!\n';
+    writeConversation(tmp, "chatgpt", "conv-extra", newMarkdown);
+
+    const result = readFileSync(filePath, "utf-8");
+    expect(result).toContain("tags: [ai, test]");
+    expect(result).toContain("rating: 5");
+    expect(result).toContain("**Assistant:**");
+  });
+
+  it("既存ファイルに未知フィールドがない場合はそのまま書き込む", () => {
+    const tmp = createTmpDir();
+    const existing =
+      '---\nsource: chatgpt\nurl: https://example.com\nsaved_at: 2026-03-06T10:00:00+09:00\ntitle: "Hello"\n---\n\n# Hello\n\n**User:**\n\nHi\n';
+    const filePath = resolveFilePath(tmp, "chatgpt", "conv-no-extra");
+    mkdirSync(dirname(filePath), { recursive: true });
+    fsWriteFileSync(filePath, existing, "utf-8");
+
+    const newMarkdown =
+      '---\nsource: chatgpt\nurl: https://example.com\nsaved_at: 2026-03-06T12:00:00+09:00\ntitle: "Hello"\n---\n\n# Hello\n\n**User:**\n\nHi\n\n---\n\n**Assistant:**\n\nHello!\n';
+    writeConversation(tmp, "chatgpt", "conv-no-extra", newMarkdown);
+
+    const result = readFileSync(filePath, "utf-8");
+    expect(result).toContain("**Assistant:**");
   });
 });
 

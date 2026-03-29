@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatConversation } from "./formatter.ts";
+import { extractExtraFrontmatter, formatConversation, mergeExtraFrontmatter } from "./formatter.ts";
 import type { ConversationData } from "./types.ts";
 
 function makeData(overrides?: Partial<ConversationData>): ConversationData {
@@ -100,5 +100,38 @@ describe("formatConversation", () => {
       "2026-03-02T21:00:00+09:00",
     );
     expect(result).toContain("- item1\n- item2\n- item3");
+  });
+});
+
+describe("extractExtraFrontmatter", () => {
+  it("管理外のフィールドを抽出する", () => {
+    const md = '---\nsource: chatgpt\ntags: [ai, test]\nrating: 5\ntitle: "Hello"\n---\n# Hello';
+    const extra = extractExtraFrontmatter(md);
+    expect(extra).toEqual(["tags: [ai, test]", "rating: 5"]);
+  });
+
+  it("管理フィールドのみの場合は空配列を返す", () => {
+    const md =
+      '---\nsource: chatgpt\nurl: https://example.com\nsaved_at: 2026-03-02\ntitle: "Hello"\n---';
+    expect(extractExtraFrontmatter(md)).toEqual([]);
+  });
+
+  it("フロントマターがない場合は空配列を返す", () => {
+    expect(extractExtraFrontmatter("# Just a heading")).toEqual([]);
+  });
+});
+
+describe("mergeExtraFrontmatter", () => {
+  it("未知フィールドをフロントマター末尾に挿入する", () => {
+    const md = '---\nsource: chatgpt\ntitle: "Hello"\n---\n# Hello';
+    const result = mergeExtraFrontmatter(md, ["tags: [ai]", "rating: 5"]);
+    expect(result).toBe(
+      '---\nsource: chatgpt\ntitle: "Hello"\ntags: [ai]\nrating: 5\n---\n# Hello',
+    );
+  });
+
+  it("追加フィールドが空なら元のmarkdownを返す", () => {
+    const md = "---\nsource: chatgpt\n---\n# Hello";
+    expect(mergeExtraFrontmatter(md, [])).toBe(md);
   });
 });
