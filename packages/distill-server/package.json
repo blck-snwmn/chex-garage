@@ -10,7 +10,7 @@
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "test": "vitest run",
-    "lint": "oxlint --type-aware --type-check --deny-warnings .",
+    "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings .",
     "typecheck": "tsc --noEmit"
   }
 }
