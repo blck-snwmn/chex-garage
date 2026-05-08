@@ -8,7 +8,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --type-aware --type-check --deny-warnings ."
+    "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings ."
   },
   "peerDependencies": {
     "sharp": "^0.34.0"
