@@ -1,13 +1,19 @@
 import {
   copyFileSync,
+  existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   renameSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, extname, join } from "node:path";
-import { extractExtraFrontmatter, mergeExtraFrontmatter } from "./formatter.ts";
+import { basename as basenameOf, dirname, extname, join } from "node:path";
+import {
+  extractArtifactTitles,
+  extractExtraFrontmatter,
+  mergeExtraFrontmatter,
+} from "./formatter.ts";
 
 /** ファイルパスを解決する */
 export function resolveFilePath(vaultPath: string, source: string, conversationId: string): string {
@@ -82,6 +88,45 @@ export function resolveArtifactPath(
     conversationId,
     slugifyArtifactName(originalName),
   );
+}
+
+/** vault 内の {source} ディレクトリにある .md から、artifacts.title が title 候補に一致するものを探し conv ID を返す */
+export function findConversationByArtifactTitle(
+  vaultPath: string,
+  source: string,
+  originalName: string,
+): string | null {
+  const dir = join(vaultPath, "ai-conversations", source.toLowerCase());
+  if (!existsSync(dir)) return null;
+  const candidates = titleCandidatesFromFilename(originalName);
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return null;
+  }
+  for (const entry of entries) {
+    if (!entry.endsWith(".md")) continue;
+    let md: string;
+    try {
+      md = readFileSync(join(dir, entry), "utf-8");
+    } catch {
+      continue;
+    }
+    const titles = extractArtifactTitles(md);
+    for (const t of titles) {
+      if (candidates.has(t)) {
+        return basenameOf(entry, ".md");
+      }
+    }
+  }
+  return null;
+}
+
+function titleCandidatesFromFilename(name: string): Set<string> {
+  const ext = extname(name);
+  const noExt = ext ? name.slice(0, -ext.length) : name;
+  return new Set([name, noExt]);
 }
 
 /** ステージング配下のファイルを vault へ移動する。同 FS なら rename、跨ぐ場合は copy+unlink */

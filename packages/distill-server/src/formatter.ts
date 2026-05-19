@@ -53,6 +53,28 @@ function escapeFrontmatterValue(value: string): string {
   return value.replace(/"/g, '\\"');
 }
 
+/** Markdown の frontmatter にある artifacts ブロックから title 一覧を取り出す */
+export function extractArtifactTitles(markdown: string): string[] {
+  const fmMatch = markdown.match(/^---\n([\s\S]*?)\n---/);
+  if (!fmMatch?.[1]) return [];
+  const lines = fmMatch[1].split("\n");
+  let inArtifacts = false;
+  const titles: string[] = [];
+  for (const line of lines) {
+    const topKey = line.match(/^(\w+):/)?.[1];
+    if (topKey != null) {
+      inArtifacts = topKey === "artifacts";
+      continue;
+    }
+    if (!inArtifacts) continue;
+    const m = line.match(/^\s*(?:-\s+)?title:\s*"((?:[^"\\]|\\.)*)"\s*$/);
+    if (m?.[1] != null) {
+      titles.push(m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
+    }
+  }
+  return titles;
+}
+
 /** 既存Markdownからフロントマターの未知フィールド行を抽出する */
 export function extractExtraFrontmatter(markdown: string): string[] {
   const match = markdown.match(/^---\n([\s\S]*?)\n---/);

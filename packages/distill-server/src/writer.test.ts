@@ -10,6 +10,7 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 import {
+  findConversationByArtifactTitle,
   ingestArtifact,
   resolveArtifactPath,
   resolveFilePath,
@@ -166,6 +167,64 @@ describe("ingestArtifact", () => {
     ingestArtifact(tmp, "claude", "c", staging1, "x.html");
     const dest = ingestArtifact(tmp, "claude", "c", staging2, "x.html");
     expect(readFileSync(dest, "utf-8")).toBe("v2");
+  });
+});
+
+describe("findConversationByArtifactTitle", () => {
+  function createTmpDir(): string {
+    return mkdtempSync(join(tmpdir(), "distill-find-"));
+  }
+
+  function makeMd(title: string, artifactTitle: string): string {
+    return [
+      "---",
+      "source: grok",
+      `title: "${title}"`,
+      "artifacts:",
+      `  - title: "${artifactTitle}"`,
+      "    type: HTML",
+      "---",
+      "# x",
+    ].join("\n");
+  }
+
+  it("title が完全一致する .md の conv ID を返す", () => {
+    const tmp = createTmpDir();
+    const dir = join(tmp, "ai-conversations", "grok");
+    mkdirSync(dir, { recursive: true });
+    fsWriteFileSync(join(dir, "abc-123.md"), makeMd("Convo A", "report.html"), "utf-8");
+    fsWriteFileSync(join(dir, "xyz-789.md"), makeMd("Convo B", "other.html"), "utf-8");
+
+    expect(findConversationByArtifactTitle(tmp, "grok", "report.html")).toBe("abc-123");
+  });
+
+  it("拡張子を落とした title でも一致する", () => {
+    const tmp = createTmpDir();
+    const dir = join(tmp, "ai-conversations", "claude");
+    mkdirSync(dir, { recursive: true });
+    fsWriteFileSync(
+      join(dir, "conv-1.md"),
+      makeMd("Convo A", "Cognitive surrender report"),
+      "utf-8",
+    );
+
+    expect(findConversationByArtifactTitle(tmp, "claude", "Cognitive surrender report.html")).toBe(
+      "conv-1",
+    );
+  });
+
+  it("該当なしなら null", () => {
+    const tmp = createTmpDir();
+    const dir = join(tmp, "ai-conversations", "grok");
+    mkdirSync(dir, { recursive: true });
+    fsWriteFileSync(join(dir, "conv-1.md"), makeMd("Convo A", "other.html"), "utf-8");
+
+    expect(findConversationByArtifactTitle(tmp, "grok", "missing.html")).toBeNull();
+  });
+
+  it("ディレクトリ自体がなければ null", () => {
+    const tmp = createTmpDir();
+    expect(findConversationByArtifactTitle(tmp, "grok", "anything.html")).toBeNull();
   });
 });
 

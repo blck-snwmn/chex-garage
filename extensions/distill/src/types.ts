@@ -42,7 +42,8 @@ export interface IngestArtifactRequest {
   /** Chrome が保存した一時パス（Downloads 配下の絶対パス） */
   srcPath: string;
   source: "chatgpt" | "grok" | "claude";
-  conversationId: string;
+  /** conv ID が DL 時に確定しない場合は省略。サーバが title から逆引きする */
+  conversationId?: string;
   /** 元ファイル名（拡張子付き） */
   originalName: string;
   mime?: string;

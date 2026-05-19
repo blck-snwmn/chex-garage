@@ -30,11 +30,11 @@ export interface SaveResponse {
   error?: string;
 }
 
-/** アーティファクト取り込みリクエスト */
+/** アーティファクト取り込みリクエスト。conversationId が未指定なら vault の frontmatter から逆引き */
 export interface IngestArtifactRequest {
   srcPath: string;
   source: "chatgpt" | "grok" | "claude";
-  conversationId: string;
+  conversationId?: string;
   originalName: string;
   mime?: string;
 }

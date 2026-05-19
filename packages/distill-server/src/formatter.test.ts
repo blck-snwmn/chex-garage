@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { extractExtraFrontmatter, formatConversation, mergeExtraFrontmatter } from "./formatter.ts";
+import {
+  extractArtifactTitles,
+  extractExtraFrontmatter,
+  formatConversation,
+  mergeExtraFrontmatter,
+} from "./formatter.ts";
 import type { ConversationData } from "./types.ts";
 
 function makeData(overrides?: Partial<ConversationData>): ConversationData {
@@ -166,6 +171,38 @@ describe("extractExtraFrontmatter", () => {
       "# x",
     ].join("\n");
     expect(extractExtraFrontmatter(md)).toEqual(["tags: [ai]"]);
+  });
+});
+
+describe("extractArtifactTitles", () => {
+  it("artifacts ブロックの title を全て取り出す", () => {
+    const md = [
+      "---",
+      "source: claude",
+      'title: "convo"',
+      "artifacts:",
+      '  - title: "foo.html"',
+      "    type: HTML",
+      "  - id: toolu_xxx",
+      '    title: "widget"',
+      "    type: mcp-widget",
+      "tags: [ai]",
+      "---",
+      "# x",
+    ].join("\n");
+    expect(extractArtifactTitles(md)).toEqual(["foo.html", "widget"]);
+  });
+
+  it("artifacts ブロックがないなら空配列", () => {
+    const md = '---\nsource: claude\ntitle: "x"\n---\n# x';
+    expect(extractArtifactTitles(md)).toEqual([]);
+  });
+
+  it("ダブルクォートのエスケープを復元する", () => {
+    const md = ["---", "artifacts:", '  - title: "Say \\"hi\\""', "    type: HTML", "---"].join(
+      "\n",
+    );
+    expect(extractArtifactTitles(md)).toEqual(['Say "hi"']);
   });
 });
 

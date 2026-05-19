@@ -5,7 +5,7 @@ import type {
   SaveRequest,
   SaveResponse,
 } from "./types.ts";
-import { ingestArtifact, writeConversation } from "./writer.ts";
+import { findConversationByArtifactTitle, ingestArtifact, writeConversation } from "./writer.ts";
 
 const vaultPath = process.env.SHELF_VAULT_PATH;
 if (!vaultPath) {
@@ -69,20 +69,34 @@ const server = Bun.serve({
 
     if (req.method === "POST" && url.pathname === "/ingest-artifact") {
       const body = (await req.json()) as Partial<IngestArtifactRequest>;
-      if (!body.srcPath || !body.source || !body.conversationId || !body.originalName) {
+      if (!body.srcPath || !body.source || !body.originalName) {
         return jsonResponse(
           {
             success: false,
-            error: "Missing required fields: srcPath, source, conversationId, originalName",
+            error: "Missing required fields: srcPath, source, originalName",
           } satisfies IngestArtifactResponse,
           400,
         );
+      }
+      let conversationId = body.conversationId;
+      if (!conversationId) {
+        conversationId =
+          findConversationByArtifactTitle(vaultPath, body.source, body.originalName) ?? undefined;
+        if (!conversationId) {
+          return jsonResponse(
+            {
+              success: false,
+              error: `No conversation matched artifact title for ${body.originalName}`,
+            } satisfies IngestArtifactResponse,
+            404,
+          );
+        }
       }
       try {
         const filePath = ingestArtifact(
           vaultPath,
           body.source,
-          body.conversationId,
+          conversationId,
           body.srcPath,
           body.originalName,
         );

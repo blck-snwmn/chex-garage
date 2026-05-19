@@ -3,6 +3,8 @@ import { ingestArtifact, saveConversation } from "./client.ts";
 
 /** Downloads 内のステージングサブパス */
 const STAGING_PREFIX = "distill-staging";
+/** conv ID が DL 時に確定しない場合の placeholder。サーバが title から逆引きする */
+const PENDING_CONV_ID = "_pending";
 
 async function handleSave(data: ConversationData): Promise<void> {
   const result = await saveConversation(data);
@@ -53,16 +55,18 @@ chrome.action.onClicked.addListener((tab) => {
   });
 });
 
+type Source = "claude" | "grok" | "chatgpt";
+
 interface SourceInfo {
-  source: "claude" | "grok" | "chatgpt";
+  source: Source;
   conversationId: string;
 }
 
-function detectSource(referrer: string): SourceInfo | null {
-  if (!referrer) return null;
+function parseConversationUrl(rawUrl: string): SourceInfo | null {
+  if (!rawUrl) return null;
   let u: URL;
   try {
-    u = new URL(referrer);
+    u = new URL(rawUrl);
   } catch {
     return null;
   }
@@ -79,6 +83,41 @@ function detectSource(referrer: string): SourceInfo | null {
     return m?.[1] ? { source: "chatgpt", conversationId: m[1] } : null;
   }
   return null;
+}
+
+function canonicalHost(host: string): Source | null {
+  if (host === "claude.ai" || host.endsWith(".claude.ai")) return "claude";
+  if (host === "grok.com" || host.endsWith(".grok.com")) return "grok";
+  if (host === "chatgpt.com" || host.endsWith(".chatgpt.com")) return "chatgpt";
+  return null;
+}
+
+/** referrer がない場合は URL の origin から既知サイトを特定。conv ID は不明のまま返す */
+function detectSiteForDownload(item: chrome.downloads.DownloadItem): {
+  source: Source;
+  conversationId?: string;
+} | null {
+  const fromReferrer = parseConversationUrl(item.referrer ?? "");
+  if (fromReferrer) return fromReferrer;
+
+  const downloadUrl = item.finalUrl || item.url || "";
+  let host: string | null = null;
+  if (downloadUrl.startsWith("blob:")) {
+    try {
+      host = new URL(downloadUrl.slice("blob:".length)).hostname;
+    } catch {
+      host = null;
+    }
+  } else if (downloadUrl.startsWith("http")) {
+    try {
+      host = new URL(downloadUrl).hostname;
+    } catch {
+      host = null;
+    }
+  }
+  if (!host) return null;
+  const source = canonicalHost(host);
+  return source ? { source } : null;
 }
 
 /** Chrome の suggest 用ファイル名: 既知のフォルダ区切りに統一して basename を取り出す */
@@ -99,17 +138,18 @@ function sanitizePathComponent(name: string, fallback: string): string {
 }
 
 chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
-  const info = detectSource(item.referrer ?? "");
-  if (!info) {
+  const detected = detectSiteForDownload(item);
+  if (!detected) {
     suggest();
-    return;
+    return false;
   }
   const rawName = basename(item.filename || "artifact");
   const safeName = sanitizePathComponent(rawName, "artifact.html");
-  const safeConvId = sanitizePathComponent(info.conversationId, "unknown");
-  const filename = `${STAGING_PREFIX}/${info.source}/${safeConvId}/${safeName}`;
+  const safeConvId = sanitizePathComponent(detected.conversationId ?? PENDING_CONV_ID, "unknown");
+  const filename = `${STAGING_PREFIX}/${detected.source}/${safeConvId}/${safeName}`;
   console.log("Distill: suggesting filename", filename, "(from", rawName, ")");
   suggest({ filename, conflictAction: "overwrite" });
+  return false;
 });
 
 chrome.downloads.onChanged.addListener((delta) => {
@@ -117,25 +157,34 @@ chrome.downloads.onChanged.addListener((delta) => {
   void handleDownloadComplete(delta.id);
 });
 
+/** 完了したダウンロードのフルパスから staging/{source}/{convId}/{name} を抜き出す */
+const STAGING_PATH_RE = new RegExp(
+  `[\\\\/]${STAGING_PREFIX}[\\\\/]([^\\\\/]+)[\\\\/]([^\\\\/]+)[\\\\/]([^\\\\/]+)$`,
+);
+
+function parseStagingPath(
+  fullPath: string,
+): { source: Source; conversationId: string | null; originalName: string } | null {
+  const m = fullPath.match(STAGING_PATH_RE);
+  if (!m) return null;
+  const [, source, convIdRaw, originalName] = m;
+  if (source !== "claude" && source !== "grok" && source !== "chatgpt") return null;
+  const conversationId = convIdRaw === PENDING_CONV_ID ? null : (convIdRaw ?? null);
+  return { source, conversationId, originalName: originalName ?? "" };
+}
+
 async function handleDownloadComplete(id: number): Promise<void> {
   const [item] = await chrome.downloads.search({ id });
   if (!item) return;
-  // 自分が誘導したステージング配下のファイル以外は無視
-  if (
-    !item.filename.includes(`/${STAGING_PREFIX}/`) &&
-    !item.filename.includes(`\\${STAGING_PREFIX}\\`)
-  ) {
-    return;
-  }
+  const parsed = parseStagingPath(item.filename);
+  if (!parsed) return;
   console.log("Distill: download complete", item.filename);
-  const info = detectSource(item.referrer ?? "");
-  if (!info) return;
 
   const payload: IngestArtifactRequest = {
     srcPath: item.filename,
-    source: info.source,
-    conversationId: info.conversationId,
-    originalName: basename(item.filename),
+    source: parsed.source,
+    originalName: parsed.originalName,
+    ...(parsed.conversationId ? { conversationId: parsed.conversationId } : {}),
     ...(item.mime ? { mime: item.mime } : {}),
   };
   const res = await ingestArtifact(payload);
