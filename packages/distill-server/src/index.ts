@@ -1,6 +1,11 @@
 import { formatConversation } from "./formatter.ts";
-import type { SaveRequest, SaveResponse } from "./types.ts";
-import { writeConversation } from "./writer.ts";
+import type {
+  IngestArtifactRequest,
+  IngestArtifactResponse,
+  SaveRequest,
+  SaveResponse,
+} from "./types.ts";
+import { ingestArtifact, writeConversation } from "./writer.ts";
 
 const vaultPath = process.env.SHELF_VAULT_PATH;
 if (!vaultPath) {
@@ -60,6 +65,37 @@ const server = Bun.serve({
       const filePath = writeConversation(vaultPath, data.source, data.conversationId, markdown);
 
       return jsonResponse({ success: true, filePath } satisfies SaveResponse);
+    }
+
+    if (req.method === "POST" && url.pathname === "/ingest-artifact") {
+      const body = (await req.json()) as Partial<IngestArtifactRequest>;
+      if (!body.srcPath || !body.source || !body.conversationId || !body.originalName) {
+        return jsonResponse(
+          {
+            success: false,
+            error: "Missing required fields: srcPath, source, conversationId, originalName",
+          } satisfies IngestArtifactResponse,
+          400,
+        );
+      }
+      try {
+        const filePath = ingestArtifact(
+          vaultPath,
+          body.source,
+          body.conversationId,
+          body.srcPath,
+          body.originalName,
+        );
+        return jsonResponse({ success: true, filePath } satisfies IngestArtifactResponse);
+      } catch (e) {
+        return jsonResponse(
+          {
+            success: false,
+            error: (e as Error).message,
+          } satisfies IngestArtifactResponse,
+          500,
+        );
+      }
     }
 
     return jsonResponse({ error: "Not found" }, 404);

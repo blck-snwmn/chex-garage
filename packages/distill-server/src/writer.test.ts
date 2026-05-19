@@ -1,4 +1,5 @@
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -8,7 +9,14 @@ import {
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
-import { resolveFilePath, stripSavedAt, writeConversation } from "./writer.ts";
+import {
+  ingestArtifact,
+  resolveArtifactPath,
+  resolveFilePath,
+  slugifyArtifactName,
+  stripSavedAt,
+  writeConversation,
+} from "./writer.ts";
 
 describe("resolveFilePath", () => {
   it("正しいファイルパスを生成する", () => {
@@ -104,6 +112,60 @@ describe("writeConversation", () => {
 
     const result = readFileSync(filePath, "utf-8");
     expect(result).toContain("**Assistant:**");
+  });
+});
+
+describe("slugifyArtifactName", () => {
+  it("拡張子を保ったまま不正文字を除去する", () => {
+    expect(slugifyArtifactName("My Report.html")).toBe("My-Report.html");
+    expect(slugifyArtifactName("a/b\\c:d?.html")).toBe("abcd.html");
+  });
+
+  it("拡張子だけの名前は fallback 名を返す", () => {
+    expect(slugifyArtifactName(".html")).toBe("artifact.html");
+  });
+
+  it("拡張子なしも扱える", () => {
+    expect(slugifyArtifactName("README")).toBe("README");
+  });
+});
+
+describe("resolveArtifactPath", () => {
+  it("正しい保存先を返す", () => {
+    const p = resolveArtifactPath("/vault", "claude", "conv-1", "Report.html");
+    expect(p).toBe("/vault/ai-conversations/claude/conv-1/Report.html");
+  });
+});
+
+describe("ingestArtifact", () => {
+  function createTmpDir(): string {
+    return mkdtempSync(join(tmpdir(), "distill-ingest-"));
+  }
+
+  it("ステージングのファイルを vault に移動する", () => {
+    const tmp = createTmpDir();
+    const staging = join(tmp, "staging", "Report.html");
+    mkdirSync(dirname(staging), { recursive: true });
+    fsWriteFileSync(staging, "<html>hi</html>", "utf-8");
+
+    const dest = ingestArtifact(tmp, "claude", "conv-x", staging, "Report.html");
+    expect(dest).toBe(join(tmp, "ai-conversations", "claude", "conv-x", "Report.html"));
+    expect(readFileSync(dest, "utf-8")).toBe("<html>hi</html>");
+    expect(existsSync(staging)).toBe(false);
+  });
+
+  it("同名で再取り込みすると上書きする", () => {
+    const tmp = createTmpDir();
+    const staging1 = join(tmp, "staging1", "x.html");
+    const staging2 = join(tmp, "staging2", "x.html");
+    mkdirSync(dirname(staging1), { recursive: true });
+    mkdirSync(dirname(staging2), { recursive: true });
+    fsWriteFileSync(staging1, "v1", "utf-8");
+    fsWriteFileSync(staging2, "v2", "utf-8");
+
+    ingestArtifact(tmp, "claude", "c", staging1, "x.html");
+    const dest = ingestArtifact(tmp, "claude", "c", staging2, "x.html");
+    expect(readFileSync(dest, "utf-8")).toBe("v2");
   });
 });
 

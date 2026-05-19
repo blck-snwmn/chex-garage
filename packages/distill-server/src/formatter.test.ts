@@ -101,6 +101,39 @@ describe("formatConversation", () => {
     );
     expect(result).toContain("- item1\n- item2\n- item3");
   });
+
+  it("artifacts が空または未指定なら artifacts 行を出さない", () => {
+    const result = formatConversation(makeData(), "2026-03-02T21:00:00+09:00");
+    expect(result).not.toContain("artifacts:");
+    const empty = formatConversation(makeData({ artifacts: [] }), "2026-03-02T21:00:00+09:00");
+    expect(empty).not.toContain("artifacts:");
+  });
+
+  it("artifacts をフロントマターに出力する", () => {
+    const result = formatConversation(
+      makeData({
+        artifacts: [
+          { title: "Cognitive surrender report", type: "HTML" },
+          { id: "toolu_01Q3978u4PQHXV", title: "widget", type: "mcp-widget" },
+        ],
+      }),
+      "2026-03-02T21:00:00+09:00",
+    );
+    expect(result).toContain("artifacts:");
+    expect(result).toContain('  - title: "Cognitive surrender report"');
+    expect(result).toContain("    type: HTML");
+    expect(result).toContain("  - id: toolu_01Q3978u4PQHXV");
+    expect(result).toContain('    title: "widget"');
+    expect(result).toContain("    type: mcp-widget");
+  });
+
+  it("artifacts のタイトル内ダブルクォートをエスケープする", () => {
+    const result = formatConversation(
+      makeData({ artifacts: [{ title: 'Say "hi"', type: "HTML" }] }),
+      "2026-03-02T21:00:00+09:00",
+    );
+    expect(result).toContain('  - title: "Say \\"hi\\""');
+  });
 });
 
 describe("extractExtraFrontmatter", () => {
@@ -118,6 +151,21 @@ describe("extractExtraFrontmatter", () => {
 
   it("フロントマターがない場合は空配列を返す", () => {
     expect(extractExtraFrontmatter("# Just a heading")).toEqual([]);
+  });
+
+  it("artifacts ブロックの子行は捨てる", () => {
+    const md = [
+      "---",
+      "source: claude",
+      'title: "x"',
+      "artifacts:",
+      '  - title: "foo"',
+      "    type: HTML",
+      "tags: [ai]",
+      "---",
+      "# x",
+    ].join("\n");
+    expect(extractExtraFrontmatter(md)).toEqual(["tags: [ai]"]);
   });
 });
 

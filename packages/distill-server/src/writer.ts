@@ -1,5 +1,12 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, extname, join } from "node:path";
 import { extractExtraFrontmatter, mergeExtraFrontmatter } from "./formatter.ts";
 
 /** ファイルパスを解決する */
@@ -39,4 +46,60 @@ export function writeConversation(
   mkdirSync(dirname(filePath), { recursive: true });
   writeFileSync(filePath, markdown, "utf-8");
   return filePath;
+}
+
+const UNSAFE_CHARS_RE = /[\\/:*?"<>|]/g;
+
+/** ファイル名をファイルシステムで安全な形にする（拡張子はそのまま） */
+export function slugifyArtifactName(originalName: string): string {
+  let ext = extname(originalName);
+  let base = ext ? originalName.slice(0, -ext.length) : originalName;
+  // ".html" のような hidden-file 形式: extname は空を返すが拡張子扱いにする
+  if (!ext && /^\.[a-zA-Z0-9]+$/.test(originalName)) {
+    ext = originalName;
+    base = "";
+  }
+  const slug = base
+    .normalize("NFKC")
+    .replace(UNSAFE_CHARS_RE, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^[-.]+|[-.]+$/g, "")
+    .trim();
+  return (slug || "artifact") + ext.toLowerCase();
+}
+
+export function resolveArtifactPath(
+  vaultPath: string,
+  source: string,
+  conversationId: string,
+  originalName: string,
+): string {
+  return join(
+    vaultPath,
+    "ai-conversations",
+    source.toLowerCase(),
+    conversationId,
+    slugifyArtifactName(originalName),
+  );
+}
+
+/** ステージング配下のファイルを vault へ移動する。同 FS なら rename、跨ぐ場合は copy+unlink */
+export function ingestArtifact(
+  vaultPath: string,
+  source: string,
+  conversationId: string,
+  srcPath: string,
+  originalName: string,
+): string {
+  const destPath = resolveArtifactPath(vaultPath, source, conversationId, originalName);
+  mkdirSync(dirname(destPath), { recursive: true });
+  try {
+    renameSync(srcPath, destPath);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EXDEV") throw e;
+    copyFileSync(srcPath, destPath);
+    unlinkSync(srcPath);
+  }
+  return destPath;
 }

@@ -1,18 +1,20 @@
-import type { ConversationData } from "./types.ts";
+import type { ArtifactMeta, ConversationData } from "./types.ts";
 
 /** formatConversation が管理するフロントマターキー */
-const MANAGED_KEYS = new Set(["source", "url", "saved_at", "title"]);
+const MANAGED_KEYS = new Set(["source", "url", "saved_at", "title", "artifacts"]);
 
 /** 会話データをMarkdown文字列に変換する */
 export function formatConversation(data: ConversationData, date: string): string {
-  const frontmatter = [
+  const lines = [
     "---",
     `source: ${data.source}`,
     `url: ${data.url}`,
     `saved_at: ${date}`,
     `title: "${escapeFrontmatterValue(data.title)}"`,
+    ...formatArtifactsBlock(data.artifacts),
     "---",
-  ].join("\n");
+  ];
+  const frontmatter = lines.join("\n");
 
   const heading = `# ${data.title}`;
 
@@ -27,6 +29,26 @@ export function formatConversation(data: ConversationData, date: string): string
   return `${frontmatter}\n\n${heading}\n\n${body}\n`;
 }
 
+function formatArtifactsBlock(artifacts: ArtifactMeta[] | undefined): string[] {
+  if (!artifacts || artifacts.length === 0) return [];
+  const sorted = [...artifacts].sort((a, b) => {
+    const ka = `${a.id ?? ""}::${a.title}`;
+    const kb = `${b.id ?? ""}::${b.title}`;
+    return ka.localeCompare(kb);
+  });
+  const out: string[] = ["artifacts:"];
+  for (const a of sorted) {
+    if (a.id) {
+      out.push(`  - id: ${escapeFrontmatterValue(a.id)}`);
+      out.push(`    title: "${escapeFrontmatterValue(a.title)}"`);
+    } else {
+      out.push(`  - title: "${escapeFrontmatterValue(a.title)}"`);
+    }
+    out.push(`    type: ${escapeFrontmatterValue(a.type)}`);
+  }
+  return out;
+}
+
 function escapeFrontmatterValue(value: string): string {
   return value.replace(/"/g, '\\"');
 }
@@ -36,10 +58,20 @@ export function extractExtraFrontmatter(markdown: string): string[] {
   const match = markdown.match(/^---\n([\s\S]*?)\n---/);
   if (!match?.[1]) return [];
 
-  return match[1].split("\n").filter((line) => {
-    const key = line.match(/^(\w+):/)?.[1];
-    return key != null && !MANAGED_KEYS.has(key);
-  });
+  const lines = match[1].split("\n");
+  const extras: string[] = [];
+  let skippingManagedList = false;
+  for (const line of lines) {
+    const topKey = line.match(/^(\w+):/)?.[1];
+    if (topKey != null) {
+      skippingManagedList = MANAGED_KEYS.has(topKey);
+      if (!skippingManagedList) extras.push(line);
+      continue;
+    }
+    // 継続行（インデントされたリスト項目等）。直前のキーが管理対象なら捨て、そうでなければ extras に追加
+    if (!skippingManagedList) extras.push(line);
+  }
+  return extras;
 }
 
 /** 新しいMarkdownのフロントマターに既存の未知フィールドをマージする */

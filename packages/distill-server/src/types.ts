@@ -3,12 +3,19 @@ export interface ConversationMessage {
   content: string;
 }
 
+export interface ArtifactMeta {
+  id?: string;
+  title: string;
+  type: string;
+}
+
 export interface ConversationData {
   source: "chatgpt" | "grok" | "claude";
   conversationId: string;
   url: string;
   title: string;
   messages: ConversationMessage[];
+  artifacts?: ArtifactMeta[];
 }
 
 /** サーバーへの保存リクエスト */
@@ -18,6 +25,21 @@ export interface SaveRequest {
 
 /** サーバーからの保存レスポンス */
 export interface SaveResponse {
+  success: boolean;
+  filePath?: string;
+  error?: string;
+}
+
+/** アーティファクト取り込みリクエスト */
+export interface IngestArtifactRequest {
+  srcPath: string;
+  source: "chatgpt" | "grok" | "claude";
+  conversationId: string;
+  originalName: string;
+  mime?: string;
+}
+
+export interface IngestArtifactResponse {
   success: boolean;
   filePath?: string;
   error?: string;

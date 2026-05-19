@@ -1,5 +1,5 @@
 import type TurndownService from "turndown";
-import type { ConversationData, ConversationMessage } from "../../types.ts";
+import type { ArtifactMeta, ConversationData, ConversationMessage } from "../../types.ts";
 import { createContentScript } from "../content-script-core.ts";
 import { fingerprintElements } from "../hash.ts";
 
@@ -43,6 +43,31 @@ function extractMessages(turndown: TurndownService): ConversationMessage[] {
   return messages;
 }
 
+// Grok のアーティファクト: メッセージ内のファイル名カードに
+// aria-label="<filename> を開く" / "<filename> をダウンロード" が付く。
+// 拡張子からタイプを推定する
+const OPEN_ARIA_RE = /^(.+?)\s*を開く$/;
+
+function extractArtifacts(): ArtifactMeta[] {
+  const out: ArtifactMeta[] = [];
+  const seen = new Set<string>();
+  const cards = document.querySelectorAll<HTMLElement>("div[aria-label]");
+  for (const card of cards) {
+    const aria = card.getAttribute("aria-label") ?? "";
+    const m = aria.match(OPEN_ARIA_RE);
+    if (!m) continue;
+    const filename = m[1]?.trim() ?? "";
+    if (!filename) continue;
+    // ファイル名らしき条件（拡張子付き）
+    if (!/\.[a-zA-Z0-9]{1,8}$/.test(filename)) continue;
+    if (seen.has(filename)) continue;
+    seen.add(filename);
+    const ext = filename.match(/\.([a-zA-Z0-9]+)$/)?.[1]?.toUpperCase() ?? "FILE";
+    out.push({ title: filename, type: ext });
+  }
+  return out;
+}
+
 createContentScript({
   siteName: "grok.com",
   configureTurndown(td) {
@@ -69,15 +94,18 @@ createContentScript({
     const messages = extractMessages(turndown);
     if (messages.length === 0) return null;
 
+    const artifacts = extractArtifacts();
+
     return {
       source: "grok",
       conversationId,
       url: location.href,
       title: extractTitle(),
       messages,
+      ...(artifacts.length > 0 ? { artifacts } : {}),
     };
   },
   computeFingerprint(): string {
-    return fingerprintElements(".message-bubble");
+    return fingerprintElements(".message-bubble, div[aria-label$='を開く']");
   },
 });

@@ -1,5 +1,5 @@
 import type TurndownService from "turndown";
-import type { ConversationData, ConversationMessage } from "../../types.ts";
+import type { ArtifactMeta, ConversationData, ConversationMessage } from "../../types.ts";
 import { createContentScript } from "../content-script-core.ts";
 import { fingerprintElements } from "../hash.ts";
 
@@ -53,6 +53,53 @@ function extractMessages(turndown: TurndownService): ConversationMessage[] {
   return messages;
 }
 
+// 標準アーティファクト用カード: .artifact-block-cell の中にダウンロードボタンがあり、
+// aria-label が "<title>をダウンロード" 形式。本体テキストには種別ラベル（"HTML"/"コード"等）が並ぶ
+const DOWNLOAD_ARIA_RE = /^(.+?)\s*(?:をダウンロード|を Download|Download)$/i;
+const TYPE_LABEL_RE = /[·•・]\s*([\w\-+]+)/;
+
+function extractStandardArtifacts(): ArtifactMeta[] {
+  const out: ArtifactMeta[] = [];
+  const cells = document.querySelectorAll<HTMLElement>(".artifact-block-cell");
+  for (const cell of cells) {
+    const dlBtn = cell.querySelector<HTMLButtonElement>(
+      'button[aria-label*="ダウンロード"], button[aria-label*="Download"]',
+    );
+    const aria = dlBtn?.getAttribute("aria-label") ?? "";
+    const title = aria.match(DOWNLOAD_ARIA_RE)?.[1]?.trim();
+    if (!title) continue;
+    const type = (cell.textContent ?? "").match(TYPE_LABEL_RE)?.[1]?.trim() ?? "artifact";
+    out.push({ title, type });
+  }
+  return out;
+}
+
+// MCP ウィジェット: mcp-app-container-toolu_XXX の DIV、内部の iframe.title がウィジェット名
+function extractMcpArtifacts(): ArtifactMeta[] {
+  const out: ArtifactMeta[] = [];
+  const containers = document.querySelectorAll<HTMLElement>('[id^="mcp-app-container-"]');
+  for (const c of containers) {
+    const id = c.id.replace(/^mcp-app-container-/, "");
+    const iframe = c.querySelector<HTMLIFrameElement>("iframe");
+    const title = iframe?.title?.trim() || id;
+    out.push({ id, title, type: "mcp-widget" });
+  }
+  return out;
+}
+
+function extractArtifacts(): ArtifactMeta[] {
+  const all = [...extractStandardArtifacts(), ...extractMcpArtifacts()];
+  const seen = new Set<string>();
+  const dedup: ArtifactMeta[] = [];
+  for (const a of all) {
+    const key = `${a.id ?? ""}::${a.title}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    dedup.push(a);
+  }
+  return dedup;
+}
+
 createContentScript({
   siteName: "claude.ai",
   configureTurndown(td) {
@@ -78,17 +125,20 @@ createContentScript({
     const messages = extractMessages(turndown);
     if (messages.length === 0) return null;
 
+    const artifacts = extractArtifacts();
+
     return {
       source: "claude",
       conversationId,
       url: location.href,
       title: extractTitle(),
       messages,
+      ...(artifacts.length > 0 ? { artifacts } : {}),
     };
   },
   computeFingerprint(): string {
     return fingerprintElements(
-      '[data-testid="user-message"], [data-is-streaming] .standard-markdown',
+      '[data-testid="user-message"], [data-is-streaming] .standard-markdown, .artifact-block-cell, [id^="mcp-app-container-"]',
     );
   },
 });
