@@ -22,3 +22,19 @@ bun run test
 bun run lint
 bun run fmt
 ```
+
+### Tooling
+
+CLI tools (`lefthook`) are managed by [aqua](https://aquaproj.github.io/) with versions pinned in [aqua.yaml](aqua.yaml).
+
+Install aqua itself first (see the [aqua installation guide](https://aquaproj.github.io/docs/install)), then install the pinned tools:
+
+```
+aqua install
+```
+
+[lefthook](lefthook.yml) runs lint and format checks on staged files before each commit. Register the hooks once after cloning:
+
+```
+lefthook install
+```
