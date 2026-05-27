@@ -5,48 +5,65 @@ on:
     tags:
       - "@chex/*@*"
 
+permissions:
+  contents: read
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
 
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
         with:
           bun-version: latest
+          no-cache: true
 
       - run: bun install --frozen-lockfile
 
       - name: Parse tag
         id: tag
         run: |
-          TAG="${{ github.ref_name }}"
           # @chex/graft@0.2.0 → graft, 0.2.0
           PACKAGE=$(echo "$TAG" | sed 's/@chex\///' | sed 's/@.*//')
           VERSION=$(echo "$TAG" | sed 's/.*@//')
           echo "package=$PACKAGE" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          TAG: ${{ github.ref_name }}
 
       - name: Build
-        run: bun run build --filter="@chex/${{ steps.tag.outputs.package }}"
+        run: bun run build --filter="@chex/$PACKAGE"
+        env:
+          PACKAGE: ${{ steps.tag.outputs.package }}
 
       - name: Create zip
         run: |
-          cd extensions/${{ steps.tag.outputs.package }}/dist
-          zip -r ../../../${{ steps.tag.outputs.package }}-${{ steps.tag.outputs.version }}.zip .
+          cd "extensions/$PACKAGE/dist"
+          zip -r "../../../$PACKAGE-$VERSION.zip" .
+        env:
+          PACKAGE: ${{ steps.tag.outputs.package }}
+          VERSION: ${{ steps.tag.outputs.version }}
 
       - name: Extract release notes from CHANGELOG
         run: |
-          awk '/^## ${{ steps.tag.outputs.version }}$/{found=1; next} /^## /{if(found) exit} found{print}' \
-            "extensions/${{ steps.tag.outputs.package }}/CHANGELOG.md" > release-notes.md
+          awk -v version="$VERSION" '$0 == "## " version {found=1; next} /^## /{if(found) exit} found{print}' \
+            "extensions/$PACKAGE/CHANGELOG.md" > release-notes.md
+        env:
+          PACKAGE: ${{ steps.tag.outputs.package }}
+          VERSION: ${{ steps.tag.outputs.version }}
 
       - name: Create Release
         run: |
-          gh release create "${{ github.ref_name }}" \
-            "${{ steps.tag.outputs.package }}-${{ steps.tag.outputs.version }}.zip" \
-            --title "${{ steps.tag.outputs.package }} v${{ steps.tag.outputs.version }}" \
+          gh release create "$TAG" \
+            "$PACKAGE-$VERSION.zip" \
+            --title "$PACKAGE v$VERSION" \
             --notes-file release-notes.md
         env:
           GH_TOKEN: ${{ github.token }}
+          PACKAGE: ${{ steps.tag.outputs.package }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.tag.outputs.version }}
