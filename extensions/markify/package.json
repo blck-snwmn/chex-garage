@@ -23,6 +23,6 @@
     "@types/turndown": "5.0.6",
     "chrome-types": "0.1.429",
     "typescript": "5.9.3",
-    "vitest": "3.2.4"
+    "vitest": "4.1.0"
   }
 }
