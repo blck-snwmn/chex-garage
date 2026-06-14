@@ -11,6 +11,6 @@
     "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings ."
   },
   "peerDependencies": {
-    "sharp": "^0.34.0"
+    "sharp": "^0.34.0 || ^0.35.0"
   }
 }
