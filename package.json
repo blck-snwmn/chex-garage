@@ -26,7 +26,7 @@
     "oxlint": "1.72.0",
     "oxlint-tsgolint": "0.24.0",
     "sharp": "0.35.3",
-    "turbo": "2.10.2",
+    "turbo": "2.10.3",
     "typescript": "6.0.3",
     "vitest": "4.1.9"
   },
