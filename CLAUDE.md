@@ -18,10 +18,7 @@ bun run build
 # Run all tests
 bun run test
 
-# Type check (project references)
-bun run typecheck
-
-# Lint (oxlint with type-aware checking)
+# Lint (oxlint with type-aware checking and compiler diagnostics)
 bun run lint
 bun run lint:fix
 
@@ -84,6 +81,6 @@ Each extension has its own `CLAUDE.md` with detailed documentation. See:
 ## Tooling
 
 - **Runtime**: Bun (prefer over Node.js)
-- **Linting**: oxlint with type-aware checking (`--type-aware --type-check`)
+- **Linting**: oxlint with type-aware checking and compiler diagnostics (`typeAware` and `typeCheck` in `.oxlintrc.json`)
 - **Formatting**: oxfmt
 - **Version management**: Changesets (`bun run version` syncs manifest.json)

@@ -9,8 +9,7 @@
     "clean": "rm -rf dist",
     "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings .",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@marp-team/marp-core": "^4.2.0",

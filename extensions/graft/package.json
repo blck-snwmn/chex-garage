@@ -7,7 +7,6 @@
     "build": "bun run scripts/build.ts",
     "dev": "bun --watch run scripts/build.ts",
     "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings .",
-    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
