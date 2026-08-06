@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Native Bridge</title>
+    <style>
+      body {
+        width: 320px;
+        margin: 0;
+        padding: 20px;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+      form {
+        display: flex;
+        gap: 8px;
+      }
+      input {
+        min-width: 0;
+        flex: 1;
+        padding: 8px;
+      }
+      button {
+        padding: 8px 12px;
+      }
+      p {
+        min-height: 1.2em;
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Native Bridge</h1>
+    <form id="form">
+      <input id="message" maxlength="4096" placeholder="Message for the console" required />
+      <button>Send</button>
+    </form>
+    <p id="status"></p>
+    <script type="module" src="index.js"></script>
+  </body>
+</html>

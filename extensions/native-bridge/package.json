@@ -1,0 +1,15 @@
+{
+  "name": "@chex/native-bridge-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "dev": "bun --watch run scripts/build.ts",
+    "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@chex/build-utils": "workspace:*"
+  }
+}

@@ -70,6 +70,13 @@
         "vitest": "4.1.10",
       },
     },
+    "extensions/native-bridge": {
+      "name": "@chex/native-bridge-extension",
+      "version": "0.1.0",
+      "devDependencies": {
+        "@chex/build-utils": "workspace:*",
+      },
+    },
     "extensions/reprise": {
       "name": "@chex/reprise",
       "version": "2.0.1",
@@ -94,6 +101,10 @@
     },
     "packages/distill-server": {
       "name": "@chex/distill-server",
+      "version": "0.1.0",
+    },
+    "packages/native-bridge": {
+      "name": "@chex/native-bridge",
       "version": "0.1.0",
     },
   },
@@ -151,6 +162,10 @@
     "@chex/graft": ["@chex/graft@workspace:extensions/graft"],
 
     "@chex/markify": ["@chex/markify@workspace:extensions/markify"],
+
+    "@chex/native-bridge": ["@chex/native-bridge@workspace:packages/native-bridge"],
+
+    "@chex/native-bridge-extension": ["@chex/native-bridge-extension@workspace:extensions/native-bridge"],
 
     "@chex/reprise": ["@chex/reprise@workspace:extensions/reprise"],
 

@@ -1,0 +1,14 @@
+{
+  "name": "@chex/native-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build src/index.ts --compile --minify --outfile dist/native-bridge",
+    "dev:console": "bun run src/index.ts console",
+    "dev:host": "bun run src/index.ts host",
+    "lint": "oxlint --config ../../.oxlintrc.json --deny-warnings .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}

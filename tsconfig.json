@@ -8,6 +8,8 @@
     { "path": "extensions/markify" },
     { "path": "extensions/distill" },
     { "path": "packages/distill-server" },
+    { "path": "packages/native-bridge" },
+    { "path": "extensions/native-bridge" },
     { "path": "scripts" }
   ]
 }
