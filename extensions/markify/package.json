@@ -18,10 +18,10 @@
   },
   "devDependencies": {
     "@chex/build-utils": "workspace:*",
-    "@happy-dom/global-registrator": "20.12.0",
+    "@happy-dom/global-registrator": "20.13.1",
     "@types/bun": "1.4.0",
     "@types/turndown": "5.0.6",
-    "chrome-types": "0.1.440",
+    "chrome-types": "0.1.441",
     "typescript": "7.0.2",
     "vitest": "4.1.11"
   }
