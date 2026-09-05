@@ -62,7 +62,7 @@
       },
       "devDependencies": {
         "@chex/build-utils": "workspace:*",
-        "@happy-dom/global-registrator": "20.12.2",
+        "@happy-dom/global-registrator": "20.13.0",
         "@types/bun": "1.3.14",
         "@types/turndown": "5.0.6",
         "chrome-types": "0.1.441",
@@ -241,7 +241,7 @@
 
     "@exodus/bytes": ["@exodus/bytes@1.15.1", "", { "peerDependencies": { "@noble/hashes": "^1.8.0 || ^2.0.0" }, "optionalPeers": ["@noble/hashes"] }, "sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q=="],
 
-    "@happy-dom/global-registrator": ["@happy-dom/global-registrator@20.12.2", "", { "dependencies": { "@types/node": ">=20.0.0", "happy-dom": "^20.12.2" } }, "sha512-0aafW5l/+At7oo/lYjsokATwHKmv9F6iqOTjPDBVlmD4a6pmGINMdnt0faZuEcnvBVwBji0BoW4tdHQZ0qt9Kg=="],
+    "@happy-dom/global-registrator": ["@happy-dom/global-registrator@20.13.0", "", { "dependencies": { "@types/node": ">=20.0.0", "happy-dom": "^20.13.0" } }, "sha512-+flzajnX7FvSWmUdvwQuFPWN/Z5v3AIePxRqocpbOZfXR53EbJgCNmzdzKrxUzp3E13Yb6b6WNDyUD9H+/zUZg=="],
 
     "@img/colour": ["@img/colour@1.1.0", "", {}, "sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ=="],
 
