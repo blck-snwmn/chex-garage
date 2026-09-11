@@ -1,3 +1,4 @@
+import { once as waitForEvent } from "node:events";
 import { chmodSync, existsSync, lstatSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
@@ -97,13 +98,23 @@ async function runConsole(): Promise<void> {
     }
   });
 
+  let stopping = false;
   const stop = (): void => {
+    if (stopping) {
+      return;
+    }
+    stopping = true;
     input.close();
     host?.destroy();
     server.close();
   };
-  process.once("SIGINT", stop);
-  process.once("SIGTERM", stop);
+  const signalController = new AbortController();
+  void Promise.race([
+    waitForEvent(process, "SIGINT" satisfies NodeJS.Signals, { signal: signalController.signal }),
+    waitForEvent(process, "SIGTERM" satisfies NodeJS.Signals, { signal: signalController.signal }),
+  ])
+    .then(stop)
+    .finally(() => signalController.abort());
   server.once("close", () => {
     if (existsSync(socketPath) && lstatSync(socketPath).isSocket()) {
       rmSync(socketPath);
