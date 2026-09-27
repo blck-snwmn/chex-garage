@@ -23,7 +23,7 @@
     "chrome-types": "0.1.450",
     "oxfmt": "0.70.0",
     "oxlint": "1.85.0",
-    "oxlint-tsgolint": "7.0.2002",
+    "oxlint-tsgolint": "7.0.2003",
     "sharp": "0.35.4",
     "turbo": "2.11.3",
     "typescript": "7.0.2",
