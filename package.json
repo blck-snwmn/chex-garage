@@ -22,7 +22,7 @@
     "@types/bun": "1.4.3",
     "chrome-types": "0.1.454",
     "oxfmt": "0.72.0",
-    "oxlint": "1.87.0",
+    "oxlint": "1.88.0",
     "oxlint-tsgolint": "7.0.2004",
     "sharp": "0.35.5",
     "turbo": "2.11.7",
