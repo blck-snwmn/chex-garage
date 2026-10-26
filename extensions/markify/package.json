@@ -21,7 +21,7 @@
     "@happy-dom/global-registrator": "21.0.4",
     "@types/bun": "1.4.4",
     "@types/turndown": "5.0.6",
-    "chrome-types": "0.1.458",
+    "chrome-types": "0.1.459",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
   }
