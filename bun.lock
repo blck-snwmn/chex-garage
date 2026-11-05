@@ -7,7 +7,7 @@
       "devDependencies": {
         "@changesets/cli": "3.0.3",
         "@types/bun": "1.4.4",
-        "chrome-types": "0.1.460",
+        "chrome-types": "0.1.461",
         "oxfmt": "0.75.0",
         "oxlint": "1.90.0",
         "oxlint-tsgolint": "7.0.2005",
@@ -65,7 +65,7 @@
         "@happy-dom/global-registrator": "21.0.4",
         "@types/bun": "1.4.4",
         "@types/turndown": "5.0.6",
-        "chrome-types": "0.1.460",
+        "chrome-types": "0.1.461",
         "typescript": "7.0.2",
         "vitest": "5.0.5",
       },
@@ -613,7 +613,7 @@
 
     "chai": ["chai@6.3.0", "", {}, "sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg=="],
 
-    "chrome-types": ["chrome-types@0.1.460", "", {}, "sha512-qJBNKJazbmqsz9KR7ZwOmWZTu4Vi+F6ow5QnC1whpFlnAfTasRf1qIRop11kXSdhhc2PoE1WRNScK+iHLGfM9w=="],
+    "chrome-types": ["chrome-types@0.1.461", "", {}, "sha512-y87EooY8Fi9ZmYAogbNbS1OlL4Og1ag0H9kHCu+waL9N84WxqCpYaIIpxKuTwqs6ScNmU3UqJXtex9836rSgxQ=="],
 
     "commander": ["commander@8.3.0", "", {}, "sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww=="],
 
