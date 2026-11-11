@@ -23,7 +23,7 @@
       "dependencies": {
         "@marp-team/marp-core": "4.4.0",
         "@mozilla/readability": "0.6.0",
-        "turndown": "7.2.4",
+        "turndown": "7.2.5",
         "turndown-plugin-gfm": "1.0.2",
       },
       "devDependencies": {
@@ -37,7 +37,7 @@
       "name": "@chex/distill",
       "version": "0.4.0",
       "dependencies": {
-        "turndown": "7.2.4",
+        "turndown": "7.2.5",
         "turndown-plugin-gfm": "1.0.2",
       },
       "devDependencies": {
@@ -57,7 +57,7 @@
       "version": "1.0.1",
       "dependencies": {
         "@mozilla/readability": "0.6.0",
-        "turndown": "7.2.4",
+        "turndown": "7.2.5",
         "turndown-plugin-gfm": "1.0.2",
       },
       "devDependencies": {
@@ -811,7 +811,7 @@
 
     "turbo": ["turbo@2.11.10", "", { "optionalDependencies": { "@turbo/darwin-64": "2.11.10", "@turbo/darwin-arm64": "2.11.10", "@turbo/linux-64": "2.11.10", "@turbo/linux-arm64": "2.11.10", "@turbo/windows-64": "2.11.10", "@turbo/windows-arm64": "2.11.10" }, "bin": { "turbo": "bin/turbo" } }, "sha512-3GJYwig8ygEI89oaOZdduJX8/aw6O9eRPYHoIt6T3FZl9hkKjiyIspufJoVgqXihPoJu8M5CSV0DlZvzfohBCw=="],
 
-    "turndown": ["turndown@7.2.4", "", { "dependencies": { "@mixmark-io/domino": "^2.2.0" } }, "sha512-I8yFsfRzmzK0WV1pNNOA4A7y4RDfFxPRxb3t+e3ui14qSGOxGtiSP6GjeX+Y6CHb7HYaFj7ECUD7VE5kQMZWGQ=="],
+    "turndown": ["turndown@7.2.5", "", { "dependencies": { "@mixmark-io/domino": "^2.2.0" } }, "sha512-EKZvCCFHh8sWttpAMs10U6niZFJ2cpz8LkCPlylxoG4JcHF50J7EHnnBW3AY1qXtUMu7kDjCp7dnggB1sIbqEQ=="],
 
     "turndown-plugin-gfm": ["turndown-plugin-gfm@1.0.2", "", {}, "sha512-vwz9tfvF7XN/jE0dGoBei3FXWuvll78ohzCZQuOb+ZjWrs3a0XhQVomJEb2Qh4VHTPNRO4GPZh0V7VRbiWwkRg=="],
 
