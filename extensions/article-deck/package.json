@@ -14,7 +14,7 @@
   "dependencies": {
     "@marp-team/marp-core": "4.4.0",
     "@mozilla/readability": "0.6.0",
-    "turndown": "7.2.4",
+    "turndown": "7.2.5",
     "turndown-plugin-gfm": "1.0.2"
   },
   "devDependencies": {
